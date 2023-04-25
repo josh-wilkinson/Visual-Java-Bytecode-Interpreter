@@ -144,6 +144,11 @@
   <ItemGroup>
     <ClInclude Include="vm.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\..\Desktop\Sample.txt" />
+    <Text Include="..\..\..\..\Desktop\Spin.txt" />
+    <Text Include="..\..\..\..\Desktop\Sum.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

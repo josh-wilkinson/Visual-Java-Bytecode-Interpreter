@@ -2,7 +2,9 @@
 
 int main()
 {
-	std::cout << "Hello World!";
+
+	// Parse text file
+
 
 	return 0;
 }
