@@ -74,7 +74,7 @@ void vmStackPush(uint64_t value)
 	vm.stack_top++; // next space in memory
 }
 
-uint64_t vmStackPop()
+uint64_t vmStackPop(void)
 {
 	vm.stack_top--; // previous space in memory
 	return *vm.stack_top;
