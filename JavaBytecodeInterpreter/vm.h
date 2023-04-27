@@ -49,10 +49,12 @@ typedef enum
 	iflt,
 	ifle,
 	invokestatic,
-	invokevirtual
+	invokevirtual,
+	/* stop execution */
+	OP_DONE
 } opcode;
 
-typedef enum class interpretResult
+typedef enum interpretResult
 {
 	SUCCESS,
 	ERROR_DIVISION_BY_ZERO,
@@ -62,7 +64,7 @@ typedef enum class interpretResult
 void vmReset()
 {
 	std::cout << "Reset VM state" << std::endl;
-	vm = { NULL };
+	vm = decltype(vm){ NULL };
 	vm.stack_top = vm.stack;
 }
 
@@ -79,12 +81,26 @@ uint64_t vmStackPop()
 }
 
 // interpreter code
-interpretResult vmInterpret() // program goes through code here
+interpretResult vmInterpret(uint8_t* program) // program goes through code here
 {
 	vmReset();
 
+	std::cout << "Starting Interpreter..." << std::endl;
+	vm.ip = program; // current opcode instruction
 
+	for (;;)
+	{
+		uint8_t instruction = *vm.ip;
+		switch (instruction)
+		{
+			// All of the opcode instructions are implemented here!
+			case OP_DONE:
+				return SUCCESS;
+			default:
+				return ERROR_UNKNOWN_OPCODE;
+		}
+	}	
 
-	return interpretResult::SUCCESS;
+	return SUCCESS;
 }
 
