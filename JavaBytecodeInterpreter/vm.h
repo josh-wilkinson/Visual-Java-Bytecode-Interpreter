@@ -4,12 +4,14 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <inttypes.h>
 #include <assert.h>
 #include <vector>
+#include <fstream>
 
 // stack based interpreter
 struct
