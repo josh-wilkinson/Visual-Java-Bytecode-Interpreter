@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <vector>
 #include <fstream>
+#include <sstream>
 
 // stack based interpreter
 struct
@@ -52,6 +53,7 @@ typedef enum
 	ifle,
 	invokestatic,
 	invokevirtual,
+	invokespecial, // added 30/04
 	/* stop execution */
 	OP_DONE
 } opcode;
