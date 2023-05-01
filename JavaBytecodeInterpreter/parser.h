@@ -1,9 +1,61 @@
 #pragma once
 #include "vm.h"
 
-void parseLine(std::string line)
+void parseLine(std::string line, int code[256], int size)
 {
-	
+	bool isCode = false;
+
+	std::istringstream itemReader;
+
+	std::string item;
+	std::string opcodeOperand = "";
+
+	char c;
+
+	for (int i = 0; i < line.length(); i++)
+	{
+		c = line.at(i);
+		//std::cout << c;
+		if (c == ':')
+		{
+			i = i + 2;
+			c = line.at(i);
+			isCode = true;
+		}
+
+		if (isCode)
+		{
+			//std::cout << c;
+			opcodeOperand += c;
+		}
+	}
+
+	std::cout << opcodeOperand << std::endl;
+
+	// now parse the opcodeOperand string
+
+	int itemCount = 0;
+
+	//read strings
+	itemReader.clear();
+	itemReader.str(opcodeOperand);
+	while (itemReader.good())
+	{
+		itemCount++;
+		itemReader >> item;
+		if (item != "Code:")
+		{
+			if (itemCount == 1) // item 1: opcode
+			{
+				// add to array
+			}
+			else if (itemCount == 2) // item 2: possible operand
+			{
+				// add to array
+			}
+		}
+	}
+	std::cout << "Item count: " << itemCount << std::endl;
 }
 
 void checkTokens()
@@ -11,7 +63,7 @@ void checkTokens()
 
 }
 
-opcode convert(const std::string& str)
+opcode stringToOpcode(const std::string& str)
 {
 	if (str == "iconst_i") return iconst_i;
 	else if (str == "iload") return iload;
@@ -38,13 +90,51 @@ opcode convert(const std::string& str)
 	else if (str == "invokevirtual") return invokevirtual;
 	else if (str == "invokespecial") return invokespecial;
 	else if (str == "return") return OP_DONE;
-	else return;	
+	else	
+		return NA;	
 }
 
-void read_instructions(void)
+void read_instructions(int code[256], std::string filename, int size)
 {
-	//parseLine();
-	checkTokens();
+	// Ignore first line
+	// 2: class name + [ { ]
+	// 3: class method
+	// 4: code marker [ Code: ]
+	// 5-7: opcodes
+	// 8: blank line
+	// 9: method (normally main method)
+	// 10: code marker [ Code: ]
+	// 11+: opcodes
+	// eof: curly bracket [ } ]
+
+	int currentLineNumber = 1;
+
+	std::string line;
+	std::string item;
+
+	std::istringstream itemReader;
+
+	std::ifstream myfile(filename);
+
+	if (myfile.is_open())
+	{
+		while (std::getline(myfile, line))
+		{
+			//read strings
+			itemReader.clear();
+			itemReader.str(line);
+			while (itemReader.good())
+			{
+				itemReader >> item;
+				if (item == "Code:")
+				{
+					parseLine(line, code, size);
+				}
+			}
+
+			currentLineNumber++;
+		}
+	}
 }
 
 void printTextFileContents(std::string filename)
@@ -70,11 +160,9 @@ void printTextFileCode(std::string filename)
 {
 
 	std::string line;
-
 	std::string item;
 
 	std::istringstream itemReader;
-
 	std::ifstream myfile(filename);
 
 	bool isCode = false;
@@ -109,57 +197,17 @@ void printTextFileCode(std::string filename)
 				{
 					isCode = false;
 				}
-				
+
 				item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove A from string
 
 				if (isCode)
 				{
-					std::cout << item << " ";
+					std::cout << item << " " << std::endl;
 				}
-
 			}
 
-			if (isCode)
-			{
-				//std::cout << line << std::endl;
-			}
-
-			if (isCode)
-				std::cout << std::endl;
-
-			isCode = false;
-			
-			
+			isCode = false;			
 		}
 	}
-
 	myfile.close();
-
 }
-
-void getItems(uint8_t code[256], std::string filename)
-{
-	
-	int textFileLineNumber;
-	bool isCode = false;
-
-	std::string line;
-	std::string item;
-
-	std::istringstream itemReader;
-	std::ifstream myfile(filename);
-
-	// Ignore first line
-	// 2: class name + [ { ]
-	// 3: class method
-	// 4: code marker [ Code: ]
-	// 5-7: opcodes
-	// 8: blank line
-	// 9: method (normally main method)
-	// 10: code marker [ Code: ]
-	// 11+: opcodes
-	// eof: curly bracket [ } ]
-	
-}
-
-
