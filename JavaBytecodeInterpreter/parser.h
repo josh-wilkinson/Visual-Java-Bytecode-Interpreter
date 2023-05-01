@@ -25,7 +25,6 @@ void parseLine(std::string line, int code[256], int &size)
 
 		if (isCode)
 		{
-			//std::cout << c;
 			opcodeOperand += c;
 		}
 	}
@@ -34,7 +33,7 @@ void parseLine(std::string line, int code[256], int &size)
 
 	int itemCount = 0;
 
-	//read strings
+	// read strings
 	itemReader.clear();
 	itemReader.str(opcodeOperand);
 	while (itemReader.good())
@@ -53,33 +52,27 @@ void parseLine(std::string line, int code[256], int &size)
 			{
 				// add to array
 				item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
+				item.erase(remove(item.begin(), item.end(), ','), item.end()); //remove , from string
 				code[size] = stoi(item);
 				size++;
+			}
+			else if (itemCount == 3)
+			{
+				// add to array
+				if (item != "//") // with '//' denoting a comment
+				{
+					item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
+					item.erase(remove(item.begin(), item.end(), ','), item.end()); //remove , from string
+					code[size] = stoi(item);
+					size++;
+				}
 			}
 		}
 	}	
 }
 
-void checkTokens()
-{
-
-}
-
 void readInstructions(int code[256], std::string filename, int &size)
 {
-	// Ignore first line
-	// 2: class name + [ { ]
-	// 3: class method
-	// 4: code marker [ Code: ]
-	// 5-7: opcodes
-	// 8: blank line
-	// 9: method (normally main method)
-	// 10: code marker [ Code: ]
-	// 11+: opcodes
-	// eof: curly bracket [ } ]
-
-	int currentLineNumber = 1;
-
 	std::string line;
 	std::string item;
 
@@ -92,16 +85,12 @@ void readInstructions(int code[256], std::string filename, int &size)
 	{
 		while (std::getline(myfile, line))
 		{
-
 			if (isCode)
 			{
 				parseLine(line, code, size);
-				//std::cout << line << std::endl;
 			}
 
-			//std::cout << line << std::endl;
-
-			//read strings
+			// read strings
 			itemReader.clear();
 			itemReader.str(line);
 			while (itemReader.good())
@@ -116,15 +105,14 @@ void readInstructions(int code[256], std::string filename, int &size)
 					isCode = false;
 				}
 			}
-
-			currentLineNumber++;
 		}
 	}
+
+	myfile.close();
 }
 
 void printTextFileContents(std::string filename)
 {
-
 	std::string line;
 
 	std::ifstream myfile(filename);
@@ -138,12 +126,10 @@ void printTextFileContents(std::string filename)
 	}
 
 	myfile.close();
-
 }
 
 void printTextFileCode(std::string filename)
 {
-
 	std::string line;
 	std::string item;
 
@@ -194,5 +180,6 @@ void printTextFileCode(std::string filename)
 			isCode = false;			
 		}
 	}
+
 	myfile.close();
 }

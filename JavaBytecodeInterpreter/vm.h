@@ -31,16 +31,17 @@ struct
 // opcodes enumerator
 typedef enum
 {
-	iconst_i,
-	iload,
-	istore,
+	aload_0,
+	bipush, // added 01/05
+	iconst_0, // changed 01/05
+	iload_1, // changed 01/05
+	istore_1, // changed 01/05
 	iadd,
 	iinc,
 	isub,
 	imul,
 	ishl,
 	ishr,
-	bipush, // added 01/05
 	if_icmpne,
 	if_icmpeq,
 	if_icmpgt,
@@ -58,6 +59,7 @@ typedef enum
 	invokevirtual,
 	invokespecial, // added 30/04
 	/* stop execution */
+	GOTO, // added 01/05 - equivalent to goto
 	OP_DONE,
 	NA = 257
 } opcode;
@@ -104,6 +106,8 @@ interpretResult vmInterpret(uint8_t* program) // program goes through code here
 			// All of the opcode instructions are implemented here!
 			case OP_DONE:
 				return SUCCESS;
+			case NA:
+				return ERROR_UNKNOWN_OPCODE;
 			default:
 				return ERROR_UNKNOWN_OPCODE;
 		}
@@ -114,9 +118,10 @@ interpretResult vmInterpret(uint8_t* program) // program goes through code here
 
 opcode stringToOpcode(const std::string& str)
 {
-	if (str == "iconst_i") return iconst_i;
-	else if (str == "iload") return iload;
-	else if (str == "istore") return istore;
+	if (str == "aload_0") return aload_0;
+	else if (str == "iconst_0") return iconst_0;
+	else if (str == "iload_1") return iload_1;
+	else if (str == "istore_1") return istore_1;
 	else if (str == "iadd") return iadd;
 	else if (str == "iinc") return iinc;
 	else if (str == "isub") return isub;
@@ -140,6 +145,7 @@ opcode stringToOpcode(const std::string& str)
 	else if (str == "invokestatic") return invokestatic;
 	else if (str == "invokevirtual") return invokevirtual;
 	else if (str == "invokespecial") return invokespecial;
+	else if (str == "goto") return GOTO;
 	else if (str == "return") return OP_DONE;
 	else
 		return NA;
