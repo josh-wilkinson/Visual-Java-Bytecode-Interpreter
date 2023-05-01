@@ -2,21 +2,18 @@
 #include "parser.h"
 
 
-
-
-
 int main(int argc, char* argv[])
 {
 
 	// Parse text file
-	// std::vector<uint8_t> v = {}; ?vector?
-	uint8_t code[256];
+	int code[256];
+	int size = 0; // number of elements in code array
 
-	std::ifstream myfile("Spin.txt");
+	//parseLine("       3: bipush        100", code, size);
+	readInstructions(code, "Spin.txt", size);
 
-	printTextFileCode("Spin.txt");
-
-	myfile.close();
+	for (int i = 0; i < size; i++)
+		std::cout << code[i] << " ";
 	
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables

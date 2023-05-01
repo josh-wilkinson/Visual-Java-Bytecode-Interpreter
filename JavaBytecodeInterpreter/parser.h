@@ -52,6 +52,7 @@ void parseLine(std::string line, int code[256], int &size)
 			else if (itemCount == 2) // item 2: possible operand
 			{
 				// add to array
+				item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
 				code[size] = stoi(item);
 				size++;
 			}
@@ -64,7 +65,7 @@ void checkTokens()
 
 }
 
-void read_instructions(int code[256], std::string filename, int &size)
+void readInstructions(int code[256], std::string filename, int &size)
 {
 	// Ignore first line
 	// 2: class name + [ { ]
@@ -83,15 +84,38 @@ void read_instructions(int code[256], std::string filename, int &size)
 	std::string item;
 
 	std::istringstream itemReader;
-
 	std::ifstream myfile(filename);
+
+	bool isCode = false;
 
 	if (myfile.is_open())
 	{
 		while (std::getline(myfile, line))
 		{
 
-			parseLine(line, code, size);
+			if (isCode)
+			{
+				parseLine(line, code, size);
+				//std::cout << line << std::endl;
+			}
+
+			//std::cout << line << std::endl;
+
+			//read strings
+			itemReader.clear();
+			itemReader.str(line);
+			while (itemReader.good())
+			{
+				itemReader >> item;
+				if (item == "Code:")
+				{
+					isCode = true;
+				}
+				else if (item == "return")
+				{
+					isCode = false;
+				}
+			}
 
 			currentLineNumber++;
 		}

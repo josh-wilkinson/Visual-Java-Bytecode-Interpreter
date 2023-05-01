@@ -3,6 +3,7 @@
 #define STACK_MAX 256
 
 #include <iostream>
+#include <ctype.h>
 #include <vector>
 #include <string>
 #include <stdio.h>
@@ -39,12 +40,14 @@ typedef enum
 	imul,
 	ishl,
 	ishr,
+	bipush, // added 01/05
 	if_icmpne,
 	if_icmpeq,
 	if_icmpgt,
 	if_cmpge,
 	if_icmplt,
 	if_icmple,
+	if_icmpge, // added 01/05
 	ifeq,
 	ifne,
 	ifgt,
@@ -55,7 +58,8 @@ typedef enum
 	invokevirtual,
 	invokespecial, // added 30/04
 	/* stop execution */
-	OP_DONE
+	OP_DONE,
+	NA = 257
 } opcode;
 
 typedef enum interpretResult
@@ -106,5 +110,38 @@ interpretResult vmInterpret(uint8_t* program) // program goes through code here
 	}	
 
 	return SUCCESS;
+}
+
+opcode stringToOpcode(const std::string& str)
+{
+	if (str == "iconst_i") return iconst_i;
+	else if (str == "iload") return iload;
+	else if (str == "istore") return istore;
+	else if (str == "iadd") return iadd;
+	else if (str == "iinc") return iinc;
+	else if (str == "isub") return isub;
+	else if (str == "imul") return imul;
+	else if (str == "ishl") return ishl;
+	else if (str == "ishr") return ishr;
+	else if (str == "bipush") return bipush;
+	else if (str == "if_icmpne") return if_icmpne;
+	else if (str == "if_icmpeq") return if_icmpeq;
+	else if (str == "if_icmpgt") return if_icmpgt;
+	else if (str == "if_cmpge") return if_cmpge;
+	else if (str == "if_icmplt") return if_icmplt;
+	else if (str == "if_icmple") return if_icmple;
+	else if (str == "if_icmpge") return if_icmpge;
+	else if (str == "ifeq") return ifeq;
+	else if (str == "ifne") return ifne;
+	else if (str == "ifgt") return ifgt;
+	else if (str == "ifge") return ifge;
+	else if (str == "iflt") return iflt;
+	else if (str == "ifle") return ifle;
+	else if (str == "invokestatic") return invokestatic;
+	else if (str == "invokevirtual") return invokevirtual;
+	else if (str == "invokespecial") return invokespecial;
+	else if (str == "return") return OP_DONE;
+	else
+		return NA;
 }
 
