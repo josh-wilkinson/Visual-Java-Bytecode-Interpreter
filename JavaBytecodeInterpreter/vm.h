@@ -31,17 +31,19 @@ struct
 // opcodes enumerator
 typedef enum
 {
+	aload,
 	aload_0,
+	aload_1,
+	aload_2,
+	aload_3,
 	bipush, // added 01/05
-	iconst_0, // changed 01/05
-	iload_1, // changed 01/05
-	istore_1, // changed 01/05
 	iadd,
-	iinc,
-	isub,
-	imul,
-	ishl,
-	ishr,
+	iconst_0,
+	iconst_1,
+	iconst_2,
+	iconst_3,
+	iconst_4,
+	iconst_5,
 	if_icmpne,
 	if_icmpeq,
 	if_icmpgt,
@@ -55,9 +57,24 @@ typedef enum
 	ifge,
 	iflt,
 	ifle,
+	iinc,
+	iload,
+	iload_0,
+	iload_1,
+	iload_2,
+	iload_3,
+	invokespecial, // added 30/04
 	invokestatic,
 	invokevirtual,
-	invokespecial, // added 30/04
+	imul,
+	isub,
+	ishl,
+	ishr,
+	istore,
+	istore_0,
+	istore_1,
+	istore_2,
+	istore_3,
 	/* stop execution */
 	GOTO, // added 01/05 - equivalent to goto
 	OP_DONE,
@@ -118,6 +135,8 @@ interpretResult vmInterpret(uint8_t* program) // program goes through code here
 
 opcode stringToOpcode(const std::string& str)
 {
+	// so in C & C++ you cannot use a switch statement with strings...
+
 	if (str == "aload_0") return aload_0;
 	else if (str == "iconst_0") return iconst_0;
 	else if (str == "iload_1") return iload_1;
@@ -150,4 +169,6 @@ opcode stringToOpcode(const std::string& str)
 	else
 		return NA;
 }
+
+
 
