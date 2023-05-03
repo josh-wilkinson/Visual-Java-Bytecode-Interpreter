@@ -13,8 +13,8 @@ int main(int argc, char* argv[])
 	readInstructions(code, "Spin.txt", numberOfItems);
 
 	for (int i = 0; i < numberOfItems; i++)
-		std::cout << code[i] << " ";
-	
+		std::cout << code[i] << ", ";
+
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
 	{		
