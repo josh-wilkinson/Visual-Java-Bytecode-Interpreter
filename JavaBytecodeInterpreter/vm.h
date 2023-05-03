@@ -182,7 +182,10 @@ opcode stringToOpcode(const std::string& str)
 		{"goto", GOTO},
 	};
 
-	return mp[str];
+	if (mp.count(str) > 0) // if value exists in map
+		return mp[str];
+	else
+		return NA;	
 }
 
 
