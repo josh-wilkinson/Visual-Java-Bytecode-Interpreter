@@ -10,8 +10,6 @@ void parseLine(std::string line, codeLine code[256], int &size)
 	std::string item;
 	std::string opcodeOperand = "";
 
-	
-	
 	char c;
 
 	for (int i = 0; i < line.length(); i++)
@@ -27,20 +25,23 @@ void parseLine(std::string line, codeLine code[256], int &size)
 
 		if (isCode)
 		{
-			opcodeOperand += c;
+			opcodeOperand += c; // store everything after the line number that is considered code
 		}
 	}
+
+	// parse for line number
 	std::string lineNum = "";
+
 	for (int i = 0; i < line.length(); i++)
 	{
 		c = line.at(i);
 		
 		if (c == ':')
 			break;
-
 		lineNum += c;
 	}
-	lineNum.erase(remove(lineNum.begin(), lineNum.end(), ' '), lineNum.end()); //remove # from string
+
+	lineNum.erase(remove(lineNum.begin(), lineNum.end(), ' '), lineNum.end()); //remove blank spaces from string
 	code[size].lineNumber = stoi(lineNum);
 
 	// now parse the opcodeOperand string
@@ -77,6 +78,20 @@ void parseLine(std::string line, codeLine code[256], int &size)
 					item.erase(remove(item.begin(), item.end(), ','), item.end()); //remove , from string
 					code[size].operand2 = stoi(item);
 				}
+				else
+					break;
+			}
+			else if (itemCount == 4)
+			{
+				// add to array
+				if (item != "//") // with '//' denoting a comment
+				{
+					item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
+					item.erase(remove(item.begin(), item.end(), ','), item.end()); //remove , from string
+					code[size].operand3 = stoi(item);
+				}
+				else
+					break;
 			}
 		}
 	}

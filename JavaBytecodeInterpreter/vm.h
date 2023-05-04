@@ -16,16 +16,6 @@
 #include <fstream>
 #include <sstream>
 
-struct codeLine
-{
-	int lineNumber, instruction, operand1, operand2, operand3;
-
-	void incrementLineNumber()
-	{
-		lineNumber++;
-	}
-};
-
 // stack based interpreter
 struct
 {
@@ -39,6 +29,12 @@ struct
 	uint64_t result;
 } vm;
 
+// structure for every line in the program
+struct codeLine
+{
+	uint8_t lineNumber, instruction, operand1, operand2, operand3;
+};
+
 // opcodes enumerator
 typedef enum
 {
@@ -47,7 +43,7 @@ typedef enum
 	aload_1,
 	aload_2,
 	aload_3,
-	bipush, // added 01/05
+	bipush,
 	iadd,
 	iconst_0,
 	iconst_1,
@@ -61,7 +57,7 @@ typedef enum
 	if_cmpge,
 	if_icmplt,
 	if_icmple,
-	if_icmpge, // added 01/05
+	if_icmpge,
 	ifeq,
 	ifne,
 	ifgt,
@@ -74,7 +70,7 @@ typedef enum
 	iload_1,
 	iload_2,
 	iload_3,
-	invokespecial, // added 30/04
+	invokespecial, 
 	invokestatic,
 	invokevirtual,
 	imul,
@@ -86,10 +82,9 @@ typedef enum
 	istore_1,
 	istore_2,
 	istore_3,
-	/* stop execution */
-	GOTO, // added 01/05 - equivalent to goto
-	OP_DONE,
-	NA = 257
+	GOTO,
+	OP_DONE, // stop execution
+	NA = 257 // default - opcode does not exist
 } opcode;
 
 typedef enum interpretResult

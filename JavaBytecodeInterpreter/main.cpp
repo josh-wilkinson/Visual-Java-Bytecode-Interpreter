@@ -5,23 +5,21 @@
 int main(int argc, char* argv[])
 {
 	codeLine code[256]; // array of lines of code
-	int size = 0; // number of elements in code array
+	int sizeOfCodeArray = 0; // number of elements in code array
 
 	// Parse text file
+	readInstructions(code, "Spin.txt", sizeOfCodeArray);
 
-	//parseLine("0: iconst_0", code, size);
-	readInstructions(code, "Spin.txt", size);
+	uint64_t result = code[0].lineNumber;
 
-	//for (int i = 0; i < numberOfItems; i++)
-		//std::cout << code[i].instruction << ", ";
-
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
 		std::cout << code[i].lineNumber << std::endl;
 		std::cout << code[i].instruction << std::endl;
+		std::cout << code[i].operand1 << std::endl;
+		std::cout << code[i].operand2 << std::endl;
+		std::cout << code[i].operand3 << std::endl;
 	}
-
-	//std::cout << code[0].instruction;
 
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
