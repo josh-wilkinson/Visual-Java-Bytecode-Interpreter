@@ -9,9 +9,7 @@ int main(int argc, char* argv[])
 
 	// Parse text file
 	readInstructions(code, "Spin.txt", sizeOfCodeArray);
-
-	uint64_t result = code[0].lineNumber;
-
+	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
 		std::cout << "Line: " << byteToReadableFormat(code[i].lineNumber) << std::endl;
@@ -21,13 +19,18 @@ int main(int argc, char* argv[])
 		std::cout << "Op.3: " << byteToReadableFormat(code[i].operand3) << std::endl;
 		std::cout << std::endl;
 	}
-	
+	*/
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
 	{		
-		// interpretResult result = vmInterpret(code);
+		interpretResult result = vmInterpret(code);
 		
-		// assert(result == SUCCESS);
+		assert(result == SUCCESS);
+
+		if (result == SUCCESS)
+			std::cout << "Interpreter ran successfully!";
+		else if (result == ERROR_UNKNOWN_OPCODE)
+			std::cout << "Error: unknown opcode.";
 	}
 
 	return 0;

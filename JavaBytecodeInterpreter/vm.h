@@ -115,16 +115,16 @@ uint64_t vmStackPop(void)
 }
 
 // interpreter code
-interpretResult vmInterpret(uint8_t* program) // program goes through code here
+interpretResult vmInterpret(codeLine program[256]) // program goes through code here
 {
 	vmReset();
-
-	std::cout << "Starting Interpreter..." << std::endl;
-	vm.ip = program; // current opcode instruction
-	
+	int i = 0;
+	std::cout << "Interpreter started" << std::endl;
+	int counter = 0;
 	for (;;)
 	{
-		uint8_t instruction = *vm.ip;
+		uint8_t instruction = program[i].instruction;
+		i++;
 		switch (instruction)
 		{
 			// All of the opcode instructions are implemented here!
@@ -133,7 +133,9 @@ interpretResult vmInterpret(uint8_t* program) // program goes through code here
 			case NA:
 				return ERROR_UNKNOWN_OPCODE;
 			default:
-				return ERROR_UNKNOWN_OPCODE;
+				counter++;
+				std::cout << "Counter: " << counter << std::endl;
+				break;
 		}
 	}	
 
@@ -186,6 +188,7 @@ opcode stringToOpcode(const std::string& str)
 		{"istore_2", istore_2},
 		{"istore_3", istore_3},
 		{"goto", GOTO},
+		{"return", OP_DONE},
 	};
 
 	if (mp.count(str) > 0) // if value exists in map
