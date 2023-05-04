@@ -14,13 +14,14 @@ int main(int argc, char* argv[])
 
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
-		std::cout << code[i].lineNumber << std::endl;
-		std::cout << code[i].instruction << std::endl;
-		std::cout << code[i].operand1 << std::endl;
-		std::cout << code[i].operand2 << std::endl;
-		std::cout << code[i].operand3 << std::endl;
+		std::cout << "Line: " << byteToReadableFormat(code[i].lineNumber) << std::endl;
+		std::cout << "Code: " << byteToReadableFormat(code[i].instruction) << std::endl;
+		std::cout << "Op.1: " << byteToReadableFormat(code[i].operand1) << std::endl;
+		std::cout << "Op.2: " << byteToReadableFormat(code[i].operand2) << std::endl;
+		std::cout << "Op.3: " << byteToReadableFormat(code[i].operand3) << std::endl;
+		std::cout << std::endl;
 	}
-
+	
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
 	{		

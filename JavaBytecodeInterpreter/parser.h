@@ -1,6 +1,7 @@
 #pragma once
 #include "vm.h"
 
+
 void parseLine(std::string line, codeLine code[256], int &size)
 {
 	bool isCode = false;
@@ -209,4 +210,11 @@ void printTextFileCode(std::string filename)
 	}
 
 	myfile.close();
+}
+
+uint64_t byteToReadableFormat(uint8_t byte)
+{
+	uint64_t returnValue = byte;
+
+	return returnValue;
 }

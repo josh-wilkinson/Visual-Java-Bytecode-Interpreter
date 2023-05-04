@@ -16,6 +16,7 @@
 #include <fstream>
 #include <sstream>
 
+
 // stack based interpreter
 struct
 {
@@ -32,7 +33,7 @@ struct
 // structure for every line in the program
 struct codeLine
 {
-	uint8_t lineNumber, instruction, operand1, operand2, operand3;
+	uint8_t lineNumber, instruction, operand1 = 0, operand2 = 0, operand3 = 0;
 };
 
 // opcodes enumerator
