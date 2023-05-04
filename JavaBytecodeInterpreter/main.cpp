@@ -4,16 +4,24 @@
 
 int main(int argc, char* argv[])
 {
-	int code[256];
-	int numberOfItems = 0; // number of elements in code array
+	codeLine code[256]; // array of lines of code
+	int size = 0; // number of elements in code array
 
 	// Parse text file
 
-	//parseLine("       1: invokespecial #1                  // Method java/lang/Object. < init > :()V ", code, size);
-	readInstructions(code, "Spin.txt", numberOfItems);
+	//parseLine("0: iconst_0", code, size);
+	readInstructions(code, "Spin.txt", size);
 
-	for (int i = 0; i < numberOfItems; i++)
-		std::cout << code[i] << ", ";
+	//for (int i = 0; i < numberOfItems; i++)
+		//std::cout << code[i].instruction << ", ";
+
+	for (int i = 0; i < size; i++)
+	{
+		std::cout << code[i].lineNumber << std::endl;
+		std::cout << code[i].instruction << std::endl;
+	}
+
+	//std::cout << code[0].instruction;
 
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables

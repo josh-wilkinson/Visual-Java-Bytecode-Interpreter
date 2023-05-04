@@ -1,7 +1,7 @@
 #pragma once
 #include "vm.h"
 
-void parseLine(std::string line, int code[256], int &size)
+void parseLine(std::string line, codeLine code[256], int &size)
 {
 	bool isCode = false;
 
@@ -10,6 +10,8 @@ void parseLine(std::string line, int code[256], int &size)
 	std::string item;
 	std::string opcodeOperand = "";
 
+	
+	
 	char c;
 
 	for (int i = 0; i < line.length(); i++)
@@ -28,6 +30,18 @@ void parseLine(std::string line, int code[256], int &size)
 			opcodeOperand += c;
 		}
 	}
+	std::string lineNum = "";
+	for (int i = 0; i < line.length(); i++)
+	{
+		c = line.at(i);
+		
+		if (c == ':')
+			break;
+
+		lineNum += c;
+	}
+	lineNum.erase(remove(lineNum.begin(), lineNum.end(), ' '), lineNum.end()); //remove # from string
+	code[size].lineNumber = stoi(lineNum);
 
 	// now parse the opcodeOperand string
 
@@ -45,16 +59,14 @@ void parseLine(std::string line, int code[256], int &size)
 			if (itemCount == 1) // item 1: opcode
 			{
 				// add to array
-				code[size] = stringToOpcode(item);
-				size++;
+				code[size].instruction = stringToOpcode(item);
 			}
 			else if (itemCount == 2) // item 2: possible operand
 			{
 				// add to array
 				item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
 				item.erase(remove(item.begin(), item.end(), ','), item.end()); //remove , from string
-				code[size] = stoi(item);
-				size++;
+				code[size].operand1 = stoi(item);
 			}
 			else if (itemCount == 3)
 			{
@@ -63,15 +75,15 @@ void parseLine(std::string line, int code[256], int &size)
 				{
 					item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
 					item.erase(remove(item.begin(), item.end(), ','), item.end()); //remove , from string
-					code[size] = stoi(item);
-					size++;
+					code[size].operand2 = stoi(item);
 				}
 			}
 		}
-	}	
+	}
+	size++;
 }
 
-void readInstructions(int code[256], std::string filename, int &size)
+void readInstructions(codeLine code[256], std::string filename, int &size)
 {
 	std::string line;
 	std::string item;

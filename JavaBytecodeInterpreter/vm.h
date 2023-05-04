@@ -16,15 +16,14 @@
 #include <fstream>
 #include <sstream>
 
-class codeLine
+struct codeLine
 {
-	public:
-		int lineNumber, instruction, operand1, operand2, operand3;
+	int lineNumber, instruction, operand1, operand2, operand3;
 
-		codeLine()
-		{
-
-		}
+	void incrementLineNumber()
+	{
+		lineNumber++;
+	}
 };
 
 // stack based interpreter
