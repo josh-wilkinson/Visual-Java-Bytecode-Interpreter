@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
 	{		
 		// interpretResult result = vmInterpret(code);
-
+		
 		// assert(result == SUCCESS);
 	}
 

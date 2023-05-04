@@ -16,6 +16,17 @@
 #include <fstream>
 #include <sstream>
 
+class codeLine
+{
+	public:
+		int lineNumber, instruction, operand1, operand2, operand3;
+
+		codeLine()
+		{
+
+		}
+};
+
 // stack based interpreter
 struct
 {
@@ -115,7 +126,7 @@ interpretResult vmInterpret(uint8_t* program) // program goes through code here
 
 	std::cout << "Starting Interpreter..." << std::endl;
 	vm.ip = program; // current opcode instruction
-
+	
 	for (;;)
 	{
 		uint8_t instruction = *vm.ip;
