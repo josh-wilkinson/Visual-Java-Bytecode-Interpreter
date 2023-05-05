@@ -27,9 +27,10 @@ struct
 	uint64_t* stack_top;
 
 	// Registers
-	uint64_t r1;
-	uint64_t r2;
-	uint64_t r3;
+	uint64_t var0;
+	uint64_t var1;
+	uint64_t var2;
+	uint64_t var3;
 } vm;
 
 // structure for every line in the program
@@ -144,6 +145,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case bipush:
 				break;
 			case iadd:
+				vmStackPush(vmStackPop() + vmStackPop());
 				break;
 			case iconst_0:
 				vmStackPush(0);
@@ -192,14 +194,20 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case iinc:
 				break;
 			case iload:
+				// format: opcode operand
+				// different way to iload_0 to iload_3
 				break;
 			case iload_0:
+				vmStackPush(vm.var0);
 				break;
 			case iload_1:
+				vmStackPush(vm.var1);
 				break;
 			case iload_2:
+				vmStackPush(vm.var2);
 				break;
 			case iload_3:
+				vmStackPush(vm.var3);
 				break;
 			case invokespecial:
 				break;
@@ -208,22 +216,30 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case invokevirtual:
 				break;
 			case imul:
+				vmStackPush(vmStackPop() * vmStackPop());
 				break;
 			case isub:
+				vmStackPush(vmStackPop() - vmStackPop());
 				break;
 			case ishl:
 				break;
 			case ishr:
 				break;
 			case istore:
+				// format: opcode operand
+				// different way to istore_0 to istore_3
 				break;
 			case istore_0:
+				vm.var0 = vmStackPop();
 				break;
 			case istore_1:
+				vm.var1 = vmStackPop();
 				break;
 			case istore_2:
+				vm.var2 = vmStackPop();
 				break;
 			case istore_3:
+				vm.var3 = vmStackPop();
 				break;
 			case GOTO:
 				for (int j = 0; j < size; j++)
