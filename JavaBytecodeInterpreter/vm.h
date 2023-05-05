@@ -26,8 +26,10 @@ struct
 	uint64_t stack[STACK_MAX];
 	uint64_t* stack_top;
 
-	// A single register containing the result
-	uint64_t result;
+	// Registers
+	uint64_t r1;
+	uint64_t r2;
+	uint64_t r3;
 } vm;
 
 // structure for every line in the program
@@ -115,7 +117,7 @@ uint64_t vmStackPop(void)
 }
 
 // interpreter code
-interpretResult vmInterpret(codeLine program[256]) // program goes through code here
+interpretResult vmInterpret(codeLine program[256], int size) // program goes through code here
 {
 	vmReset();
 	int i = 0;
@@ -144,16 +146,22 @@ interpretResult vmInterpret(codeLine program[256]) // program goes through code 
 			case iadd:
 				break;
 			case iconst_0:
+				vmStackPush(0);
 				break;
 			case iconst_1:
+				vmStackPush(1);
 				break;
 			case iconst_2:
+				vmStackPush(2);
 				break;
 			case iconst_3:
+				vmStackPush(3);
 				break;
 			case iconst_4:
+				vmStackPush(4);
 				break;
 			case iconst_5:
+				vmStackPush(5);
 				break;
 			case if_icmpne:
 				break;
@@ -218,6 +226,14 @@ interpretResult vmInterpret(codeLine program[256]) // program goes through code 
 			case istore_3:
 				break;
 			case GOTO:
+				for (int j = 0; j < size; j++)
+				{
+					if (program[j].lineNumber == program[i].operand1)
+					{
+						i = j;
+						break;
+					}
+				}
 				break;
 
 			case OP_DONE:
@@ -225,10 +241,10 @@ interpretResult vmInterpret(codeLine program[256]) // program goes through code 
 			case NA:
 				return ERROR_UNKNOWN_OPCODE;
 			default:
-				counter++;
-				std::cout << "Counter: " << counter << std::endl;
 				break;
 		}
+		counter++;
+		std::cout << "Counter: " << counter << std::endl;
 	}	
 
 	return SUCCESS;
