@@ -121,13 +121,24 @@ uint64_t vmStackPop(void)
 interpretResult vmInterpret(codeLine program[256], int size) // program goes through code here
 {
 	vmReset();
+	bool branching = false;
 	int i = 0;
+	int beginningOfMethod;
+	uint64_t value1;
+	uint64_t value2;
 	std::cout << "Interpreter started" << std::endl;
 	int counter = 0;
 	for (;;)
 	{
 		uint8_t instruction = program[i].instruction;
-		i++;
+
+		branching = false;
+
+		counter = program[i].lineNumber;
+		std::cout << "Counter: " << counter << std::endl;
+
+		std::cout << "Register 1: " << vm.var1 << std::endl;
+		
 		switch (instruction)
 		{
 			// All of the opcode instructions are implemented here!
@@ -143,6 +154,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case aload_3:
 				break;
 			case bipush:
+				vmStackPush(program[i].operand1);
 				break;
 			case iadd:
 				vmStackPush(vmStackPop() + vmStackPop());
@@ -178,6 +190,28 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case if_icmple:
 				break;
 			case if_icmpge:
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+
+				std::cout << "?: " << value2 << " >= " << value1 << std::endl;
+
+				if (value2 >= value1)
+				{
+
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
+
 				break;
 			case ifeq:
 				break;
@@ -192,22 +226,51 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case ifle:
 				break;
 			case iinc:
+
+				switch (program[i].operand1)
+				{
+					case 0:
+						value1 = vm.var0;
+						value2 = program[i].operand2;
+						vm.var0 = value1 + value2;
+						break;
+					case 1:
+						value1 = vm.var1;
+						value2 = program[i].operand2;
+						vm.var1 = value1 + value2;
+						break;
+					case 2:
+						value1 = vm.var2;
+						value2 = program[i].operand2;
+						vm.var2 = value1 + value2;
+						break;
+					case 3:
+						value1 = vm.var3;
+						value2 = program[i].operand2;
+						vm.var3 = value1 + value2;
+						break;
+				}
+
 				break;
 			case iload:
 				// format: opcode operand
 				// different way to iload_0 to iload_3
 				break;
 			case iload_0:
-				vmStackPush(vm.var0);
+				value1 = vm.var0;
+				vmStackPush(value1);
 				break;
 			case iload_1:
-				vmStackPush(vm.var1);
+				value1 = vm.var1;
+				vmStackPush(value1);
 				break;
 			case iload_2:
-				vmStackPush(vm.var2);
+				value1 = vm.var2;
+				vmStackPush(value1);
 				break;
 			case iload_3:
-				vmStackPush(vm.var3);
+				value1 = vm.var3;
+				vmStackPush(value1);
 				break;
 			case invokespecial:
 				break;
@@ -216,7 +279,9 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case invokevirtual:
 				break;
 			case imul:
-				vmStackPush(vmStackPop() * vmStackPop());
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+				vmStackPush(value2 * value1);
 				break;
 			case isub:
 				vmStackPush(vmStackPop() - vmStackPop());
@@ -230,25 +295,33 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				// different way to istore_0 to istore_3
 				break;
 			case istore_0:
-				vm.var0 = vmStackPop();
+				value1 = vmStackPop();
+				vm.var0 = value1;
 				break;
 			case istore_1:
-				vm.var1 = vmStackPop();
+				value1 = vmStackPop();
+				vm.var1 = value1;
 				break;
 			case istore_2:
-				vm.var2 = vmStackPop();
+				value1 = vmStackPop();
+				vm.var2 = value1;
 				break;
 			case istore_3:
-				vm.var3 = vmStackPop();
+				value1 = vmStackPop();
+				vm.var3 = value1;
 				break;
 			case GOTO:
-				for (int j = 0; j < size; j++)
+				beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+				for (int j = beginningOfMethod; j < size; j++)
 				{
 					if (program[j].lineNumber == program[i].operand1)
 					{
 						i = j;
+						branching = true;
 						break;
 					}
+					else if (program[j].instruction == OP_DONE)
+						break;
 				}
 				break;
 
@@ -257,11 +330,16 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case NA:
 				return ERROR_UNKNOWN_OPCODE;
 			default:
+				return ERROR_UNKNOWN_OPCODE;
 				break;
 		}
-		counter++;
-		std::cout << "Counter: " << counter << std::endl;
+		
+		if (!branching)
+			i++;
+		
 	}	
+
+	
 
 	return SUCCESS;
 }
@@ -287,6 +365,7 @@ opcode stringToOpcode(const std::string& str)
 		{"if_icmpeq", if_icmpeq},
 		{"if_icmpgt", if_icmpgt},
 		{"if_cmpge", if_cmpge},
+		{"if_icmpge", if_icmpge},
 		{"ifeq", ifeq},
 		{"ifne", ifne},
 		{"ifgt", ifgt},
