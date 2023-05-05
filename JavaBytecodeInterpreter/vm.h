@@ -128,6 +128,98 @@ interpretResult vmInterpret(codeLine program[256]) // program goes through code 
 		switch (instruction)
 		{
 			// All of the opcode instructions are implemented here!
+
+			case aload:
+				break;
+			case aload_0:
+				break;
+			case aload_1:
+				break;
+			case aload_2:
+				break;
+			case aload_3:
+				break;
+			case bipush:
+				break;
+			case iadd:
+				break;
+			case iconst_0:
+				break;
+			case iconst_1:
+				break;
+			case iconst_2:
+				break;
+			case iconst_3:
+				break;
+			case iconst_4:
+				break;
+			case iconst_5:
+				break;
+			case if_icmpne:
+				break;
+			case if_icmpeq:
+				break;
+			case if_icmpgt:
+				break;
+			case if_cmpge:
+				break;
+			case if_icmplt:
+				break;
+			case if_icmple:
+				break;
+			case if_icmpge:
+				break;
+			case ifeq:
+				break;
+			case ifne:
+				break;
+			case ifgt:
+				break;
+			case ifge:
+				break;
+			case iflt:
+				break;
+			case ifle:
+				break;
+			case iinc:
+				break;
+			case iload:
+				break;
+			case iload_0:
+				break;
+			case iload_1:
+				break;
+			case iload_2:
+				break;
+			case iload_3:
+				break;
+			case invokespecial:
+				break;
+			case invokestatic:
+				break;
+			case invokevirtual:
+				break;
+			case imul:
+				break;
+			case isub:
+				break;
+			case ishl:
+				break;
+			case ishr:
+				break;
+			case istore:
+				break;
+			case istore_0:
+				break;
+			case istore_1:
+				break;
+			case istore_2:
+				break;
+			case istore_3:
+				break;
+			case GOTO:
+				break;
+
 			case OP_DONE:
 				return SUCCESS;
 			case NA:
