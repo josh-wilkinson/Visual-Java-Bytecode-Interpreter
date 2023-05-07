@@ -120,13 +120,17 @@ uint64_t vmStackPop(void)
 interpretResult vmInterpret(codeLine program[256], int size) // program goes through code here
 {
 	vmReset();
+
 	bool branching = false;
 	int i = 0;
 	int beginningOfMethod;
+	int counter = 0;
+
 	uint64_t value1;
 	uint64_t value2;
+
 	std::cout << "Interpreter started" << std::endl;
-	int counter = 0;
+	
 	for (;;)
 	{
 		uint8_t instruction = program[i].instruction;
@@ -154,7 +158,9 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				vmStackPush(program[i].operand1);
 				break;
 			case iadd:
-				vmStackPush(vmStackPop() + vmStackPop());
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+				vmStackPush(value1 + value2);
 				break;
 			case iconst_0:
 				vmStackPush(0);
@@ -500,12 +506,40 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				vmStackPush(vmStackPop() - vmStackPop());
 				break;
 			case ishl:
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+				uint64_t result = value2 >> value1;
+				vmStackPush(result);
 				break;
 			case ishr:
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+				uint64_t result = value2 << value1;
+				vmStackPush(result);
 				break;
 			case istore:
 				// format: opcode operand
 				// different way to istore_0 to istore_3
+
+				switch (program[i].operand1)
+				{
+				case 0:
+					value1 = vmStackPop();
+					vm.var1 = value1;
+					break;
+				case 1:
+					value1 = vmStackPop();
+					vm.var1 = value1;
+					break;
+				case 2:
+					value1 = vmStackPop();
+					vm.var2 = value1;
+					break;
+				case 3:
+					value1 = vmStackPop();
+					vm.var3 = value1;
+					break;
+				}
 				break;
 			case istore_0:
 				value1 = vmStackPop();

@@ -5,10 +5,11 @@
 int main(int argc, char* argv[])
 {
 	codeLine code[256]; // array of lines of code
+	std::map<int, std::string> constantPool;
 	int sizeOfCodeArray = 0; // number of elements in code array
 
 	// Parse text file
-	readInstructions(code, "Spin.txt", sizeOfCodeArray);
+	readInstructions(code, "Sum.txt", sizeOfCodeArray);
 	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
