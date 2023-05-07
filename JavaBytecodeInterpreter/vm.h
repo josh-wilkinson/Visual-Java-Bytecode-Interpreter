@@ -58,7 +58,6 @@ typedef enum
 	if_icmpne,
 	if_icmpeq,
 	if_icmpgt,
-	if_cmpge,
 	if_icmplt,
 	if_icmple,
 	if_icmpge,
@@ -136,8 +135,6 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 
 		counter = program[i].lineNumber;
 		std::cout << "Counter: " << counter << std::endl;
-
-		std::cout << "Register 1: " << vm.var1 << std::endl;
 		
 		switch (instruction)
 		{
@@ -178,16 +175,119 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				vmStackPush(5);
 				break;
 			case if_icmpne:
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+
+				std::cout << "?: " << value2 << " != " << value1 << std::endl;
+
+				if (value2 != value1)
+				{
+
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case if_icmpeq:
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+
+				std::cout << "?: " << value2 << " == " << value1 << std::endl;
+
+				if (value2 == value1)
+				{
+
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case if_icmpgt:
-				break;
-			case if_cmpge:
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+
+				std::cout << "?: " << value2 << " > " << value1 << std::endl;
+
+				if (value2 > value1)
+				{
+
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case if_icmplt:
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+
+				std::cout << "?: " << value2 << " < " << value1 << std::endl;
+
+				if (value2 < value1)
+				{
+
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case if_icmple:
+				value1 = vmStackPop();
+				value2 = vmStackPop();
+
+				std::cout << "?: " << value2 << " <= " << value1 << std::endl;
+
+				if (value2 <= value1)
+				{
+
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case if_icmpge:
 				value1 = vmStackPop();
@@ -197,7 +297,6 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 
 				if (value2 >= value1)
 				{
-
 					uint64_t lineNum = program[i].operand1;
 
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
@@ -214,16 +313,130 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 
 				break;
 			case ifeq:
+				value1 = vmStackPop();
+
+				std::cout << "?: " << value1 << " is 0 " << std::endl;
+
+				if (value1 == 0)
+				{
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case ifne:
+				value1 = vmStackPop();
+
+				std::cout << "?: " << value1 << " is not 0 " << std::endl;
+
+				if (value1 != 0)
+				{
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case ifgt:
+				value1 = vmStackPop();
+
+				std::cout << "?: " << value1 << " is > 0 " << std::endl;
+
+				if (value1 > 0)
+				{
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case ifge:
+				value1 = vmStackPop();
+
+				std::cout << "?: " << value1 << " is >= 0 " << std::endl;
+
+				if (value1 >= 0)
+				{
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case iflt:
+				value1 = vmStackPop();
+
+				std::cout << "?: " << value1 << " is < 0 " << std::endl;
+
+				if (value1 < 0)
+				{
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case ifle:
+				value1 = vmStackPop();
+
+				std::cout << "?: " << value1 << " is <= 0 " << std::endl;
+
+				if (value1 <= 0)
+				{
+					uint64_t lineNum = program[i].operand1;
+
+					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					for (int j = beginningOfMethod; j < size; j++)
+					{
+						if (program[j].lineNumber == lineNum)
+						{
+							i = j;
+							branching = true;
+							break;
+						}
+					}
+				}
 				break;
 			case iinc:
 
@@ -364,7 +577,6 @@ opcode stringToOpcode(const std::string& str)
 		{"if_icmpne", if_icmpne},
 		{"if_icmpeq", if_icmpeq},
 		{"if_icmpgt", if_icmpgt},
-		{"if_cmpge", if_cmpge},
 		{"if_icmpge", if_icmpge},
 		{"ifeq", ifeq},
 		{"ifne", ifne},
