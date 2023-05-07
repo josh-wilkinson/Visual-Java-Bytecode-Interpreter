@@ -1,17 +1,13 @@
 Compiled from "Spin.java"
 class Spin {
-  Spin();
-    Code:
-       0: aload_0
-       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
-       4: return
+  
 
   public static void main(java.lang.String[]);
     Code:
        0: iconst_0
        1: istore_1
        2: iload_1
-       3: bipush        100
+       3: bipush        5
        5: if_icmpge     14
        8: iinc          1, 1
       11: goto          2
