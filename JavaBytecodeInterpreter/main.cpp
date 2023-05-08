@@ -1,7 +1,6 @@
 #include "vm.h"
 #include "parser.h"
 
-
 int main(int argc, char* argv[])
 {
 	codeLine code[256]; // array of lines of code
@@ -33,7 +32,6 @@ int main(int argc, char* argv[])
 		else if (result == ERROR_UNKNOWN_OPCODE)
 			std::cout << "Error: unknown opcode.";
 	}
-
 	return 0;
 }
 

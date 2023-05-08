@@ -16,7 +16,6 @@
 #include <fstream>
 #include <sstream>
 
-
 // stack based interpreter
 struct
 {
@@ -120,30 +119,23 @@ uint64_t vmStackPop(void)
 interpretResult vmInterpret(codeLine program[256], int size) // program goes through code here
 {
 	vmReset();
-
 	bool branching = false;
 	int i = 0;
 	int beginningOfMethod;
 	int counter = 0;
-
 	uint64_t value1;
 	uint64_t value2;
 
-	std::cout << "Interpreter started" << std::endl;
-	
+	std::cout << "Interpreter started" << std::endl;	
 	for (;;)
 	{
 		uint8_t instruction = program[i].instruction;
-
 		branching = false;
-
 		counter = program[i].lineNumber;
-		std::cout << "Counter: " << counter << std::endl;
-		
+		std::cout << "Counter: " << counter << std::endl;		
 		switch (instruction)
 		{
 			// All of the opcode instructions are implemented here!
-
 			case aload:
 				break;
 			case aload_0:
@@ -183,14 +175,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case if_icmpne:
 				value1 = vmStackPop();
 				value2 = vmStackPop();
-
 				std::cout << "?: " << value2 << " != " << value1 << std::endl;
-
 				if (value2 != value1)
 				{
-
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -206,14 +194,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case if_icmpeq:
 				value1 = vmStackPop();
 				value2 = vmStackPop();
-
 				std::cout << "?: " << value2 << " == " << value1 << std::endl;
-
 				if (value2 == value1)
 				{
-
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -229,14 +213,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case if_icmpgt:
 				value1 = vmStackPop();
 				value2 = vmStackPop();
-
 				std::cout << "?: " << value2 << " > " << value1 << std::endl;
-
 				if (value2 > value1)
 				{
-
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -252,14 +232,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case if_icmplt:
 				value1 = vmStackPop();
 				value2 = vmStackPop();
-
 				std::cout << "?: " << value2 << " < " << value1 << std::endl;
-
 				if (value2 < value1)
-				{
-
+				{					
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -275,12 +251,9 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case if_icmple:
 				value1 = vmStackPop();
 				value2 = vmStackPop();
-
 				std::cout << "?: " << value2 << " <= " << value1 << std::endl;
-
 				if (value2 <= value1)
 				{
-
 					uint64_t lineNum = program[i].operand1;
 
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
@@ -298,13 +271,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case if_icmpge:
 				value1 = vmStackPop();
 				value2 = vmStackPop();
-
 				std::cout << "?: " << value2 << " >= " << value1 << std::endl;
-
 				if (value2 >= value1)
 				{
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -320,13 +290,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				break;
 			case ifeq:
 				value1 = vmStackPop();
-
 				std::cout << "?: " << value1 << " is 0 " << std::endl;
-
 				if (value1 == 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -341,13 +308,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				break;
 			case ifne:
 				value1 = vmStackPop();
-
 				std::cout << "?: " << value1 << " is not 0 " << std::endl;
-
 				if (value1 != 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -362,13 +326,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				break;
 			case ifgt:
 				value1 = vmStackPop();
-
 				std::cout << "?: " << value1 << " is > 0 " << std::endl;
-
 				if (value1 > 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -383,13 +344,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				break;
 			case ifge:
 				value1 = vmStackPop();
-
 				std::cout << "?: " << value1 << " is >= 0 " << std::endl;
-
 				if (value1 >= 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -404,13 +362,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				break;
 			case iflt:
 				value1 = vmStackPop();
-
 				std::cout << "?: " << value1 << " is < 0 " << std::endl;
-
 				if (value1 < 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -425,13 +380,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				break;
 			case ifle:
 				value1 = vmStackPop();
-
 				std::cout << "?: " << value1 << " is <= 0 " << std::endl;
-
 				if (value1 <= 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-
 					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
@@ -445,7 +397,6 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				}
 				break;
 			case iinc:
-
 				switch (program[i].operand1)
 				{
 					case 0:
@@ -469,7 +420,6 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 						vm.var3 = value1 + value2;
 						break;
 				}
-
 				break;
 			case iload:
 				// format: opcode operand
@@ -508,19 +458,18 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			case ishl:
 				value1 = vmStackPop();
 				value2 = vmStackPop();
-				uint64_t result = value2 >> value1;
-				vmStackPush(result);
+				//uint64_t result = value2 >> value1;
+				//vmStackPush(result);
 				break;
 			case ishr:
 				value1 = vmStackPop();
 				value2 = vmStackPop();
-				uint64_t result = value2 << value1;
-				vmStackPush(result);
+				//uint64_t result = value2 << value1;
+				//vmStackPush(result);
 				break;
 			case istore:
 				// format: opcode operand
 				// different way to istore_0 to istore_3
-
 				switch (program[i].operand1)
 				{
 				case 0:
@@ -579,15 +528,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			default:
 				return ERROR_UNKNOWN_OPCODE;
 				break;
-		}
-		
+		}		
 		if (!branching)
 			i++;
-		
 	}	
-
-	
-
 	return SUCCESS;
 }
 
@@ -639,7 +583,6 @@ opcode stringToOpcode(const std::string& str)
 		{"goto", GOTO},
 		{"return", OP_DONE},
 	};
-
 	if (mp.count(str) > 0) // if value exists in map
 		return mp[str];
 	else

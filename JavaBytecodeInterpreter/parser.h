@@ -1,16 +1,12 @@
 #pragma once
 #include "vm.h"
 
-
 void parseLine(std::string line, codeLine code[256], int &size)
 {
 	bool isCode = false;
-
 	std::istringstream itemReader;
-
 	std::string item;
 	std::string opcodeOperand = "";
-
 	char c;
 
 	for (int i = 0; i < line.length(); i++)
@@ -29,10 +25,8 @@ void parseLine(std::string line, codeLine code[256], int &size)
 			opcodeOperand += c; // store everything after the line number that is considered code
 		}
 	}
-
 	// parse for line number
 	std::string lineNum = "";
-
 	for (int i = 0; i < line.length(); i++)
 	{
 		c = line.at(i);
@@ -41,14 +35,10 @@ void parseLine(std::string line, codeLine code[256], int &size)
 			break;
 		lineNum += c;
 	}
-
 	lineNum.erase(remove(lineNum.begin(), lineNum.end(), ' '), lineNum.end()); //remove blank spaces from string
 	code[size].lineNumber = stoi(lineNum);
-
 	// now parse the opcodeOperand string
-
 	int itemCount = 0;
-
 	// read strings
 	itemReader.clear();
 	itemReader.str(opcodeOperand);
@@ -117,7 +107,6 @@ void readInstructions(codeLine code[256], std::string filename, int &size)
 			{
 				parseLine(line, code, size);
 			}
-
 			// read strings
 			itemReader.clear();
 			itemReader.str(line);
@@ -142,9 +131,7 @@ void readInstructions(codeLine code[256], std::string filename, int &size)
 void printTextFileContents(std::string filename)
 {
 	std::string line;
-
 	std::ifstream myfile(filename);
-
 	if (myfile.is_open())
 	{
 		while (std::getline(myfile, line))
@@ -152,7 +139,6 @@ void printTextFileContents(std::string filename)
 			std::cout << line << std::endl;
 		}
 	}
-
 	myfile.close();
 }
 
@@ -160,10 +146,8 @@ void printTextFileCode(std::string filename)
 {
 	std::string line;
 	std::string item;
-
 	std::istringstream itemReader;
 	std::ifstream myfile(filename);
-
 	bool isCode = false;
 
 	if (myfile.is_open())
@@ -180,7 +164,6 @@ void printTextFileCode(std::string filename)
 					isCode = true;
 				}
 			}
-
 			//read strings
 			itemReader.clear();
 			itemReader.str(line);
@@ -204,7 +187,6 @@ void printTextFileCode(std::string filename)
 					std::cout << item << " " << std::endl;
 				}
 			}
-
 			isCode = false;			
 		}
 	}
@@ -215,6 +197,5 @@ void printTextFileCode(std::string filename)
 uint64_t byteToReadableFormat(uint8_t byte)
 {
 	uint64_t returnValue = byte;
-
 	return returnValue;
 }
