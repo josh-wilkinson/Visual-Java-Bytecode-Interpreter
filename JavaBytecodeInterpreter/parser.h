@@ -36,7 +36,7 @@ void parseLine(std::string line, codeLine code[256], int &size)
 		lineNum += c;
 	}
 	lineNum.erase(remove(lineNum.begin(), lineNum.end(), ' '), lineNum.end()); //remove blank spaces from string
-	code[size].lineNumber = stoi(lineNum);
+	code[size].opcodeNumber = stoi(lineNum);
 	// now parse the opcodeOperand string
 	int itemCount = 0;
 	// read strings

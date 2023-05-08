@@ -35,7 +35,7 @@ struct
 // structure for every line in the program
 struct codeLine
 {
-	uint8_t lineNumber, instruction, operand1 = 0, operand2 = 0, operand3 = 0;
+	uint8_t opcodeNumber, instruction, operand1 = 0, operand2 = 0, operand3 = 0;
 };
 
 // opcodes enumerator
@@ -115,6 +115,11 @@ uint64_t vmStackPop(void)
 	return *vm.stack_top;
 }
 
+void jumpToOpcodeNumber() // same as GOTO
+{
+
+}
+
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], int size) // program goes through code here
 {
@@ -131,7 +136,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 	{
 		uint8_t instruction = program[i].instruction;
 		branching = false;
-		counter = program[i].lineNumber;
+		counter = program[i].opcodeNumber;
 		std::cout << "Counter: " << counter << std::endl;		
 		switch (instruction)
 		{
@@ -179,10 +184,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value2 != value1)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -198,10 +203,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value2 == value1)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -217,10 +222,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value2 > value1)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -236,10 +241,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value2 < value1)
 				{					
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -256,10 +261,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				{
 					uint64_t lineNum = program[i].operand1;
 
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -275,10 +280,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value2 >= value1)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -294,10 +299,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value1 == 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -312,10 +317,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value1 != 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -330,10 +335,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value1 > 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -348,10 +353,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value1 >= 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -366,10 +371,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value1 < 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -384,10 +389,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				if (value1 <= 0)
 				{
 					uint64_t lineNum = program[i].operand1;
-					beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+					beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 					for (int j = beginningOfMethod; j < size; j++)
 					{
-						if (program[j].lineNumber == lineNum)
+						if (program[j].opcodeNumber == lineNum)
 						{
 							i = j;
 							branching = true;
@@ -507,10 +512,10 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				vm.var3 = value1;
 				break;
 			case GOTO:
-				beginningOfMethod = program[i].lineNumber - program[i].lineNumber;
+				beginningOfMethod = program[i].opcodeNumber - program[i].opcodeNumber;
 				for (int j = beginningOfMethod; j < size; j++)
 				{
-					if (program[j].lineNumber == program[i].operand1)
+					if (program[j].opcodeNumber == program[i].operand1)
 					{
 						i = j;
 						branching = true;
