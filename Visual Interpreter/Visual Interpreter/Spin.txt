@@ -1,0 +1,15 @@
+Compiled from "Spin.java"
+class Spin {
+  
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: iconst_0
+       1: istore_1
+       2: iload_1
+       3: bipush        5
+       5: if_icmpge     14
+       8: iinc          1, 1
+      11: goto          2
+      14: return
+} 
