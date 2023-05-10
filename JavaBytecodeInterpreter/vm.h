@@ -22,6 +22,7 @@ struct
 	uint8_t* ip;
 	int i = 0; // index
 	bool steppingThroughCode = false;
+	bool finishedExecution = false;
 
 	// Fixed-size stack
 	uint64_t stack[STACK_MAX];
@@ -37,7 +38,7 @@ struct
 // structure for every line in the program
 struct codeLine
 {
-	uint8_t opcodeNumber, instruction, operand1 = 0, operand2 = 0, operand3 = 0;
+	uint8_t opcodeNumber, instruction, operand1, operand2, operand3;
 };
 
 // opcodes enumerator
@@ -94,6 +95,7 @@ typedef enum
 typedef enum interpretResult
 {
 	SUCCESS,
+	SUCCESSFUL_STEP,
 	ERROR_DIVISION_BY_ZERO,
 	ERROR_UNKNOWN_OPCODE
 } interpretResult;
@@ -140,7 +142,11 @@ void jumpToOpcodeNumber(codeLine program[], int index, bool branching, int size)
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], int size) // program goes through code here
 {
-	vmReset();
+	if (!vm.steppingThroughCode)
+	{
+		vmReset();
+	}
+	
 	bool branching = false;
 	
 	int beginningOfMethod;
@@ -544,17 +550,28 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				break;
 
 			case OP_DONE:
+				vm.finishedExecution = true;
 				return SUCCESS;
 			case NA:
+				vm.finishedExecution = true;
 				return ERROR_UNKNOWN_OPCODE;
 			default:
+				vm.finishedExecution = true;
 				return ERROR_UNKNOWN_OPCODE;
 				break;
 		}		
 		if (!branching)
 			vm.i++;
 	}	while (!vm.steppingThroughCode);
-	return SUCCESS;
+	
+	if (vm.steppingThroughCode)
+		return SUCCESSFUL_STEP;
+	else
+	{
+		vm.finishedExecution = true;
+		return SUCCESS;
+	}
+		
 }
 
 opcode stringToOpcode(const std::string& str)

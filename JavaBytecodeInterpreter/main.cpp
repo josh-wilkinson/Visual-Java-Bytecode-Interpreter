@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 	int sizeOfCodeArray = 0; // number of elements in code array
 
 	// Parse text file
-	readInstructions(code, "Sum.txt", sizeOfCodeArray);
+	readInstructions(code, "Spin.txt", sizeOfCodeArray);
 	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
@@ -28,6 +28,11 @@ int main(int argc, char* argv[])
 	{		
 		interpretResult result = vmInterpret(code, sizeOfCodeArray);
 		
+		std::cout << "var 0: " << vm.var0 << std::endl;
+		std::cout << "var 1: " << vm.var1 << std::endl;
+		std::cout << "var 2: " << vm.var2 << std::endl;
+		std::cout << "var 3: " << vm.var3 << std::endl;
+
 		assert(result == SUCCESS);
 
 		if (result == SUCCESS)
