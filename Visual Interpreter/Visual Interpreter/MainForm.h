@@ -333,7 +333,7 @@ namespace VisualInterpreter {
 			this->registerLabel1->Name = L"registerLabel1";
 			this->registerLabel1->Size = System::Drawing::Size(82, 20);
 			this->registerLabel1->TabIndex = 8;
-			this->registerLabel1->Text = L"Register 1";
+			this->registerLabel1->Text = L"Register 0";
 			// 
 			// registerTextBox1
 			// 
@@ -349,7 +349,7 @@ namespace VisualInterpreter {
 			this->registerLabel2->Name = L"registerLabel2";
 			this->registerLabel2->Size = System::Drawing::Size(82, 20);
 			this->registerLabel2->TabIndex = 10;
-			this->registerLabel2->Text = L"Register 2";
+			this->registerLabel2->Text = L"Register 1";
 			// 
 			// registerTextBox2
 			// 
@@ -365,7 +365,7 @@ namespace VisualInterpreter {
 			this->registerLabel3->Name = L"registerLabel3";
 			this->registerLabel3->Size = System::Drawing::Size(82, 20);
 			this->registerLabel3->TabIndex = 12;
-			this->registerLabel3->Text = L"Register 3";
+			this->registerLabel3->Text = L"Register 2";
 			// 
 			// registerTextBox3
 			// 
@@ -381,7 +381,7 @@ namespace VisualInterpreter {
 			this->registerLabel4->Name = L"registerLabel4";
 			this->registerLabel4->Size = System::Drawing::Size(82, 20);
 			this->registerLabel4->TabIndex = 14;
-			this->registerLabel4->Text = L"Register 4";
+			this->registerLabel4->Text = L"Register 3";
 			// 
 			// registerTextBox4
 			// 
@@ -500,14 +500,29 @@ namespace VisualInterpreter {
 		
 	}
 	private: System::Void runButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		// Parse text file
+		reset();
 		readInstructions(code, fn, sizeOfCodeArray);
 		interpretResult result = vmInterpret(code, sizeOfCodeArray);
 		update();
+		vm.finishedExecution = true;
+		stepForwardButton->Enabled = false;
 	}
 
 	
 	private: System::Void stepForwardButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!vm.steppingThroughCode)
+		{
+			reset();
+			readInstructions(code, fn, sizeOfCodeArray);
+			vm.steppingThroughCode = true;
+		}
+			
+		
+		if (!vm.finishedExecution)
+		{			
+			interpretResult result = vmInterpret(code, sizeOfCodeArray);
+			update();
+		}
 	}
 	private: System::Void resetButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		reset();
@@ -557,6 +572,7 @@ namespace VisualInterpreter {
 	void reset()
 	{
 		// interpreter updates
+		enableButtons();
 		this->registerTextBox1->Text = "";
 		this->registerTextBox2->Text = "";
 		this->registerTextBox3->Text = "";
