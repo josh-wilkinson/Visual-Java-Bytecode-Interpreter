@@ -194,6 +194,60 @@ void printTextFileCode(std::string filename)
 	myfile.close();
 }
 
+std::string getTextFileCodeString(std::string filename)
+{
+	std::string returnString = "";
+	std::string line;
+	std::string item;
+	std::istringstream itemReader;
+	std::ifstream myfile(filename);
+	bool isCode = false;
+
+	if (myfile.is_open())
+	{
+		while (std::getline(myfile, line))
+		{
+			char c;
+			for (int i = 0; i < line.length(); i++)
+			{
+				c = line.at(i);
+				if (c == ':')
+				{
+					isCode = true;
+				}
+			}
+			//read strings
+			itemReader.clear();
+			itemReader.str(line);
+			while (itemReader.good())
+			{
+				itemReader >> item;
+
+				if (item == "Code:")
+				{
+					isCode = false;
+				}
+				else if (item == "//")
+				{
+					isCode = false;
+				}
+				item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove A from string
+				if (isCode)
+				{
+					returnString += item + " ";
+				}
+			}
+			if (isCode)
+				returnString += "\n";
+			isCode = false;
+			
+		}
+	}
+	myfile.close();
+
+	return returnString;
+}
+
 uint64_t byteToReadableFormat(uint8_t byte)
 {
 	uint64_t returnValue = byte;

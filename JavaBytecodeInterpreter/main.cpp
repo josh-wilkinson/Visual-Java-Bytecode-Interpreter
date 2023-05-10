@@ -20,6 +20,9 @@ int main(int argc, char* argv[])
 		std::cout << std::endl;
 	}
 	*/
+	//std::cout << getTextFileCodeString("Sum.txt");
+	
+
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
 	{		
