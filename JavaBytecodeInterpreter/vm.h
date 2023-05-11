@@ -23,7 +23,8 @@ struct
 	int i = 0; // index
 	bool steppingThroughCode = false;
 	bool finishedExecution = false;
-
+	int elementsInStack = 0;
+	
 	// Fixed-size stack
 	uint64_t stack[STACK_MAX];
 	uint64_t* stack_top;
@@ -109,12 +110,14 @@ void vmReset()
 
 void vmStackPush(uint64_t value)
 {
+	vm.elementsInStack++;
 	*vm.stack_top = value;
 	vm.stack_top++; // next space in memory
 }
 
 uint64_t vmStackPop(void)
 {
+	vm.elementsInStack--;
 	vm.stack_top--; // previous space in memory
 	return *vm.stack_top;
 }
