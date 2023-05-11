@@ -9,6 +9,7 @@
 #include "vm.h"
 #include "parser.h"
 
+
 namespace VisualInterpreter {
 
 	using namespace System;
@@ -34,6 +35,7 @@ namespace VisualInterpreter {
 			//
 			//TODO: Add the constructor code here
 			//
+			
 			
 		}
 
@@ -490,15 +492,19 @@ namespace VisualInterpreter {
 			}
 		}
 	}
+
 	private: System::Void exitToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		Application::Exit();
 	}
+
 	private: System::Void stackLabel_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
+
 	private: System::Void opcodeTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 		
 	}
+
 	private: System::Void runButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		reset();
 		readInstructions(code, fn, sizeOfCodeArray);
@@ -506,9 +512,8 @@ namespace VisualInterpreter {
 		update();
 		vm.finishedExecution = true;
 		stepForwardButton->Enabled = false;
-	}
+	}	
 
-	
 	private: System::Void stepForwardButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (!vm.steppingThroughCode)
 		{
@@ -516,14 +521,29 @@ namespace VisualInterpreter {
 			readInstructions(code, fn, sizeOfCodeArray);
 			vm.steppingThroughCode = true;
 		}
-			
+
+		int textboxIndex = 0;
+		String^ item = code[vm.i].opcodeNumber + ":";
+		String^ temp = opcodeTextBox->Text;
+		opcodeTextBox->Text = "";
+		opcodeTextBox->Text = temp;		
+		// search for the text - this will need to be reworked when there are multiple methods
+		opcodeTextBox->Find(item, textboxIndex, opcodeTextBox->TextLength, RichTextBoxFinds::None);
+		// selection colour
+		opcodeTextBox->SelectionBackColor = Color::Red;		
 		
 		if (!vm.finishedExecution)
 		{			
 			interpretResult result = vmInterpret(code, sizeOfCodeArray);
 			update();
 		}
+		else
+		{
+			MessageBox::Show("Finished Execution");
+			opcodeTextBox->SelectionBackColor = Color::Transparent;
+		}
 	}
+
 	private: System::Void resetButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		reset();
 	}
@@ -531,6 +551,7 @@ namespace VisualInterpreter {
 	private: System::Void helpToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 
 	}
+
 	private: System::Void clearToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 		reset();
 		this->opcodeTextBox->Clear();
@@ -560,19 +581,25 @@ namespace VisualInterpreter {
 
 	void update()
 	{
-		// interpreter updates
-		this->registerTextBox1->Text = "" + vm.var0;
-		this->registerTextBox2->Text = "" + vm.var1;
-		this->registerTextBox3->Text = "" + vm.var2;
+		// interpreter / opcodeTextbox updates		
+		this->registerTextBox1->Text = "" + vm.var0;		
+		this->registerTextBox2->Text = "" + vm.var1;		
+		this->registerTextBox3->Text = "" + vm.var2;		
 		this->registerTextBox4->Text = "" + vm.var3;
-
-		this->stackTextBox->Text = "" + *vm.stack_top;
+		String^ itemsInStack = "";
+		for (int i = 0; i < vm.elementsInStack; i++)
+		{
+			itemsInStack += vm.stack[i];
+			itemsInStack += "\n";
+		}
+		this->stackTextBox->Text = "" + itemsInStack;
 	}
 
 	void reset()
 	{
 		// interpreter updates
 		enableButtons();
+		opcodeTextBox->SelectionBackColor = Color::Transparent;
 		this->registerTextBox1->Text = "";
 		this->registerTextBox2->Text = "";
 		this->registerTextBox3->Text = "";
