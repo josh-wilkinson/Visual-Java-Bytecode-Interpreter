@@ -97,6 +97,7 @@ void readInstructions(codeLine code[256], std::string filename, int &size)
 	std::istringstream itemReader;
 	std::ifstream myfile(filename);
 
+	int codeCount = 0;
 	bool isCode = false;
 
 	if (myfile.is_open())
@@ -115,7 +116,9 @@ void readInstructions(codeLine code[256], std::string filename, int &size)
 				itemReader >> item;
 				if (item == "Code:")
 				{
-					isCode = true;
+					codeCount++;
+					if (codeCount == 2)
+						isCode = true;
 				}
 				else if (item == "return")
 				{
