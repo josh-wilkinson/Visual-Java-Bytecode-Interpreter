@@ -537,7 +537,6 @@ namespace VisualInterpreter {
 	{
 		Stream^ myStream;
 		OpenFileDialog^ openFileDialog1 = gcnew OpenFileDialog;
-
 		openFileDialog1->Filter = "java files (*.java)|*.java";
 		openFileDialog1->FilterIndex = 2;
 		openFileDialog1->RestoreDirectory = true;
@@ -549,48 +548,36 @@ namespace VisualInterpreter {
 				String^ strfilename = openFileDialog1->InitialDirectory + openFileDialog1->FileName;								
 				String^ JavaFile = File::ReadAllText(strfilename); // text for the java program text box
 				String^ InitialDirectory = openFileDialog1->InitialDirectory;
-				String^ JavaFileName = openFileDialog1->FileName;
-				
+				String^ JavaFileName = openFileDialog1->FileName;				
 
 				//fn = msclr::interop::marshal_as<std::string>(strfilename); // converts System::String to std::string				
 				std::string javaFileName = msclr::interop::marshal_as<std::string>(JavaFileName);
 				std::string initialDirectory = "";
-
-				std::string createClassFileCommand = "javac " + javaFileName;
-				
+				std::string createClassFileCommand = "javac " + javaFileName;				
 				system(createClassFileCommand.c_str());
 
 				eraseSubString(javaFileName, ".java"); //remove .java from string
 				//javaFileName.erase(remove(javaFileName.begin(), javaFileName.end(), ".java"), javaFileName.end()); //remove .java from string
-
 				fn = initialDirectory + javaFileName + ".txt";
-
 				std::string baseFilename = fn.substr(fn.find_last_of("/\\") + 1);
 				eraseSubString(baseFilename, ".txt");
-
+				// getting directory path to the file
 				std::string directory;
 				const size_t last_slash_idx = fn.rfind('\\');
 				if (std::string::npos != last_slash_idx)
 				{
 					directory = fn.substr(0, last_slash_idx);
 				}
-
 				std::string temp1 = "cd/ & cd ";
 				std::string javapFileCommand = temp1 + directory + " & javap -c " + baseFilename + " > " + baseFilename + ".txt";
-
 				system(javapFileCommand.c_str());				
 
-				String^ OpcodeFilePath = gcnew String(fn.c_str());
-				
+				String^ OpcodeFilePath = gcnew String(fn.c_str());				
 				// Trying to open file... fn
-
 				String^ OpcodeFile = File::ReadAllText(OpcodeFilePath);
-
 				this->javaCodeTextBox->Text = JavaFile; // add code to textbox		
 				this->opcodeTextBox->Text = OpcodeFile;
-
 				MessageBox::Show("Created " + OpcodeFile);
-
 				myStream->Close();
 				reset();
 				enableButtons();
@@ -626,8 +613,7 @@ namespace VisualInterpreter {
 			readInstructions(code, fn, sizeOfCodeArray);
 			vm.steppingThroughCode = true;
 		}
-
-		int textboxIndex = 0;
+		int textboxIndex = 180; // char index, e.g. getting 't' from "data" would be number 2.
 		String^ item = code[vm.i].opcodeNumber + ":";
 		String^ temp = opcodeTextBox->Text;
 		opcodeTextBox->Text = "";
@@ -636,7 +622,6 @@ namespace VisualInterpreter {
 		opcodeTextBox->Find(item, textboxIndex, opcodeTextBox->TextLength, RichTextBoxFinds::None);
 		// selection colour
 		opcodeTextBox->SelectionBackColor = Color::Red;		
-		
 		if (!vm.finishedExecution)
 		{			
 			interpretResult result = vmInterpret(code, sizeOfCodeArray);
