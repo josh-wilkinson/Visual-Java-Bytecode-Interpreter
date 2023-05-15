@@ -469,7 +469,7 @@ namespace VisualInterpreter {
 			this->stackTextBox->Name = L"stackTextBox";
 			this->stackTextBox->ReadOnly = true;
 			this->stackTextBox->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->stackTextBox->Size = System::Drawing::Size(97, 132);
+			this->stackTextBox->Size = System::Drawing::Size(97, 146);
 			this->stackTextBox->TabIndex = 1;
 			this->stackTextBox->Text = L"";
 			// 
@@ -573,7 +573,7 @@ namespace VisualInterpreter {
 				std::string javaFileName = msclr::interop::marshal_as<std::string>(JavaFileName);
 				std::string initialDirectory = "";
 				std::string createClassFileCommand = "javac " + javaFileName;				
-				WinExec(createClassFileCommand.c_str(), SW_HIDE);
+				system(createClassFileCommand.c_str());
 
 				eraseSubString(javaFileName, ".java"); //remove .java from string
 				//javaFileName.erase(remove(javaFileName.begin(), javaFileName.end(), ".java"), javaFileName.end()); //remove .java from string
@@ -589,8 +589,8 @@ namespace VisualInterpreter {
 				}
 				std::string temp1 = "cd/ & cd ";
 				std::string javapFileCommand = temp1 + directory + " & javap -c " + baseFilename + " > " + baseFilename + ".txt";
-				WinExec(javapFileCommand.c_str(), SW_HIDE);
-
+				system(javapFileCommand.c_str());
+				
 				String^ OpcodeFilePath = gcnew String(fn.c_str());				
 				// Trying to open file... fn
 				String^ OpcodeFile = File::ReadAllText(OpcodeFilePath);
@@ -703,10 +703,16 @@ namespace VisualInterpreter {
 		if (vm.usingVar3)
 			this->registerTextBox4->Text = "" + vm.var3;
 
-		String^ itemsInStack = "\n";
+		String^ itemsInStack = "";
 
 		if (vm.elementsInStack <= 1)
+			itemsInStack += "\n\n\n";
+		else if (vm.elementsInStack == 2)
+			itemsInStack += "\n\n";
+		else if (vm.elementsInStack == 3)
 			itemsInStack += "\n";
+		else 
+			itemsInStack += "";
 
 		for (int i = vm.elementsInStack-1; i >= 0; i--)
 		{
