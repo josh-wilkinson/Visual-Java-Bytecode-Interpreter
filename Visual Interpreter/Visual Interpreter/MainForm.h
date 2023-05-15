@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <Windows.h>
 
 #include <msclr\marshal_cppstd.h>
 
@@ -288,7 +289,7 @@ namespace VisualInterpreter {
 			// 
 			this->opcodeTextBox->BackColor = System::Drawing::Color::MintCream;
 			this->opcodeTextBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->opcodeTextBox->Font = (gcnew System::Drawing::Font(L"Consolas", 16, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->opcodeTextBox->Font = (gcnew System::Drawing::Font(L"Consolas", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->opcodeTextBox->Location = System::Drawing::Point(666, 3);
 			this->opcodeTextBox->Name = L"opcodeTextBox";
@@ -355,8 +356,11 @@ namespace VisualInterpreter {
 			// 
 			// registerTextBox1
 			// 
+			this->registerTextBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)),
+				static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)));
 			this->registerTextBox1->Location = System::Drawing::Point(91, 89);
 			this->registerTextBox1->Name = L"registerTextBox1";
+			this->registerTextBox1->ReadOnly = true;
 			this->registerTextBox1->Size = System::Drawing::Size(100, 26);
 			this->registerTextBox1->TabIndex = 9;
 			// 
@@ -371,8 +375,11 @@ namespace VisualInterpreter {
 			// 
 			// registerTextBox2
 			// 
+			this->registerTextBox2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)),
+				static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)));
 			this->registerTextBox2->Location = System::Drawing::Point(285, 89);
 			this->registerTextBox2->Name = L"registerTextBox2";
+			this->registerTextBox2->ReadOnly = true;
 			this->registerTextBox2->Size = System::Drawing::Size(100, 26);
 			this->registerTextBox2->TabIndex = 11;
 			// 
@@ -387,8 +394,11 @@ namespace VisualInterpreter {
 			// 
 			// registerTextBox3
 			// 
+			this->registerTextBox3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)),
+				static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)));
 			this->registerTextBox3->Location = System::Drawing::Point(479, 89);
 			this->registerTextBox3->Name = L"registerTextBox3";
+			this->registerTextBox3->ReadOnly = true;
 			this->registerTextBox3->Size = System::Drawing::Size(100, 26);
 			this->registerTextBox3->TabIndex = 13;
 			// 
@@ -403,8 +413,11 @@ namespace VisualInterpreter {
 			// 
 			// registerTextBox4
 			// 
+			this->registerTextBox4->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)),
+				static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)));
 			this->registerTextBox4->Location = System::Drawing::Point(91, 121);
 			this->registerTextBox4->Name = L"registerTextBox4";
+			this->registerTextBox4->ReadOnly = true;
 			this->registerTextBox4->Size = System::Drawing::Size(100, 26);
 			this->registerTextBox4->TabIndex = 15;
 			// 
@@ -413,7 +426,7 @@ namespace VisualInterpreter {
 			this->flowLayoutPanel4->Controls->Add(this->stackTitleLabel);
 			this->flowLayoutPanel4->Location = System::Drawing::Point(3, 183);
 			this->flowLayoutPanel4->Name = L"flowLayoutPanel4";
-			this->flowLayoutPanel4->Size = System::Drawing::Size(654, 80);
+			this->flowLayoutPanel4->Size = System::Drawing::Size(654, 64);
 			this->flowLayoutPanel4->TabIndex = 1;
 			// 
 			// stackTitleLabel
@@ -432,9 +445,9 @@ namespace VisualInterpreter {
 			// 
 			this->flowLayoutPanel6->Controls->Add(this->stackLabel);
 			this->flowLayoutPanel6->Controls->Add(this->stackTextBox);
-			this->flowLayoutPanel6->Location = System::Drawing::Point(3, 269);
+			this->flowLayoutPanel6->Location = System::Drawing::Point(3, 253);
 			this->flowLayoutPanel6->Name = L"flowLayoutPanel6";
-			this->flowLayoutPanel6->Size = System::Drawing::Size(654, 119);
+			this->flowLayoutPanel6->Size = System::Drawing::Size(654, 149);
 			this->flowLayoutPanel6->TabIndex = 2;
 			// 
 			// stackLabel
@@ -448,9 +461,15 @@ namespace VisualInterpreter {
 			// 
 			// stackTextBox
 			// 
+			this->stackTextBox->BackColor = System::Drawing::Color::Silver;
+			this->stackTextBox->Dock = System::Windows::Forms::DockStyle::Bottom;
+			this->stackTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->stackTextBox->Location = System::Drawing::Point(63, 3);
 			this->stackTextBox->Name = L"stackTextBox";
-			this->stackTextBox->Size = System::Drawing::Size(76, 107);
+			this->stackTextBox->ReadOnly = true;
+			this->stackTextBox->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->stackTextBox->Size = System::Drawing::Size(97, 132);
 			this->stackTextBox->TabIndex = 1;
 			this->stackTextBox->Text = L"";
 			// 
@@ -458,7 +477,7 @@ namespace VisualInterpreter {
 			// 
 			this->flowLayoutPanel7->Controls->Add(this->javaCodeLabel);
 			this->flowLayoutPanel7->Controls->Add(this->flowLayoutPanel8);
-			this->flowLayoutPanel7->Location = System::Drawing::Point(3, 394);
+			this->flowLayoutPanel7->Location = System::Drawing::Point(3, 408);
 			this->flowLayoutPanel7->Name = L"flowLayoutPanel7";
 			this->flowLayoutPanel7->Size = System::Drawing::Size(613, 452);
 			this->flowLayoutPanel7->TabIndex = 3;
@@ -487,13 +506,13 @@ namespace VisualInterpreter {
 			this->javaCodeTextBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
 				static_cast<System::Int32>(static_cast<System::Byte>(64)));
 			this->javaCodeTextBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->javaCodeTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->javaCodeTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->javaCodeTextBox->ForeColor = System::Drawing::SystemColors::Window;
 			this->javaCodeTextBox->Location = System::Drawing::Point(3, 3);
 			this->javaCodeTextBox->Name = L"javaCodeTextBox";
 			this->javaCodeTextBox->ReadOnly = true;
-			this->javaCodeTextBox->Size = System::Drawing::Size(607, 387);
+			this->javaCodeTextBox->Size = System::Drawing::Size(607, 376);
 			this->javaCodeTextBox->TabIndex = 0;
 			this->javaCodeTextBox->Text = L"";
 			// 
@@ -554,7 +573,7 @@ namespace VisualInterpreter {
 				std::string javaFileName = msclr::interop::marshal_as<std::string>(JavaFileName);
 				std::string initialDirectory = "";
 				std::string createClassFileCommand = "javac " + javaFileName;				
-				system(createClassFileCommand.c_str());
+				WinExec(createClassFileCommand.c_str(), SW_HIDE);
 
 				eraseSubString(javaFileName, ".java"); //remove .java from string
 				//javaFileName.erase(remove(javaFileName.begin(), javaFileName.end(), ".java"), javaFileName.end()); //remove .java from string
@@ -570,14 +589,14 @@ namespace VisualInterpreter {
 				}
 				std::string temp1 = "cd/ & cd ";
 				std::string javapFileCommand = temp1 + directory + " & javap -c " + baseFilename + " > " + baseFilename + ".txt";
-				system(javapFileCommand.c_str());				
+				WinExec(javapFileCommand.c_str(), SW_HIDE);
 
 				String^ OpcodeFilePath = gcnew String(fn.c_str());				
 				// Trying to open file... fn
 				String^ OpcodeFile = File::ReadAllText(OpcodeFilePath);
 				this->javaCodeTextBox->Text = JavaFile; // add code to textbox		
 				this->opcodeTextBox->Text = OpcodeFile;
-				MessageBox::Show("Created " + OpcodeFile);
+				MessageBox::Show("Created " + OpcodeFilePath);
 				myStream->Close();
 				reset();
 				enableButtons();
@@ -632,6 +651,8 @@ namespace VisualInterpreter {
 			MessageBox::Show("Finished Execution");
 			opcodeTextBox->SelectionBackColor = Color::Transparent;
 		}
+
+		opcodeTextBox->ScrollToCaret();
 	}
 
 	private: System::Void resetButton_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -645,6 +666,7 @@ namespace VisualInterpreter {
 	private: System::Void clearToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 		reset();
 		this->opcodeTextBox->Clear();
+		this->javaCodeTextBox->Clear();
 		disableButtons();
 	}
 	
@@ -671,15 +693,24 @@ namespace VisualInterpreter {
 
 	void update()
 	{
-		// interpreter / opcodeTextbox updates		
-		this->registerTextBox1->Text = "" + vm.var0;		
-		this->registerTextBox2->Text = "" + vm.var1;		
-		this->registerTextBox3->Text = "" + vm.var2;		
-		this->registerTextBox4->Text = "" + vm.var3;
-		String^ itemsInStack = "";
+		// interpreter / opcodeTextbox updates	
+		if (vm.usingVar0)
+			this->registerTextBox1->Text = "" + vm.var0;		
+		if (vm.usingVar1)
+			this->registerTextBox2->Text = "" + vm.var1;	
+		if (vm.usingVar2)
+			this->registerTextBox3->Text = "" + vm.var2;	
+		if (vm.usingVar3)
+			this->registerTextBox4->Text = "" + vm.var3;
+
+		String^ itemsInStack = "\n";
+
+		if (vm.elementsInStack <= 1)
+			itemsInStack += "\n";
+
 		for (int i = vm.elementsInStack-1; i >= 0; i--)
 		{
-			itemsInStack += vm.stack[i];
+			itemsInStack += "   " + vm.stack[i];
 			itemsInStack += "\n";
 		}
 		this->stackTextBox->Text = "" + itemsInStack; // stack
