@@ -1,0 +1,28 @@
+Compiled from "MathOp.java"
+class MathOp {
+  MathOp();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: iconst_2
+       1: istore_1
+       2: iconst_4
+       3: istore_2
+       4: iload_1
+       5: iload_2
+       6: if_icmple     16
+       9: iload_2
+      10: iload_1
+      11: idiv
+      12: istore_1
+      13: goto          20
+      16: iload_1
+      17: iload_2
+      18: imul
+      19: istore_1
+      20: return
+}

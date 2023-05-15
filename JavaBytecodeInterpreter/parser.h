@@ -1,7 +1,7 @@
 #pragma once
 #include "vm.h"
 
-void parseLine(std::string line, codeLine code[256], int &size)
+void parseLine(std::string line, codeLine code[256], int& size)
 {
 	bool isCode = false;
 	std::istringstream itemReader;
@@ -30,7 +30,7 @@ void parseLine(std::string line, codeLine code[256], int &size)
 	for (int i = 0; i < line.length(); i++)
 	{
 		c = line.at(i);
-		
+
 		if (c == ':')
 			break;
 		lineNum += c;
@@ -89,7 +89,7 @@ void parseLine(std::string line, codeLine code[256], int &size)
 	size++;
 }
 
-void readInstructions(codeLine code[256], std::string filename, int &size)
+void readInstructions(codeLine code[256], std::string filename, int& size)
 {
 	std::string line;
 	std::string item;
@@ -97,6 +97,7 @@ void readInstructions(codeLine code[256], std::string filename, int &size)
 	std::istringstream itemReader;
 	std::ifstream myfile(filename);
 
+	int codeCount = 0;
 	bool isCode = false;
 
 	if (myfile.is_open())
@@ -115,7 +116,9 @@ void readInstructions(codeLine code[256], std::string filename, int &size)
 				itemReader >> item;
 				if (item == "Code:")
 				{
-					isCode = true;
+					codeCount++;
+					if (codeCount == 2)
+						isCode = true;
 				}
 				else if (item == "return")
 				{
@@ -187,7 +190,7 @@ void printTextFileCode(std::string filename)
 					std::cout << item << " " << std::endl;
 				}
 			}
-			isCode = false;			
+			isCode = false;
 		}
 	}
 
@@ -240,7 +243,7 @@ std::string getTextFileCodeString(std::string filename)
 			if (isCode)
 				returnString += "\n";
 			isCode = false;
-			
+
 		}
 	}
 	myfile.close();

@@ -618,6 +618,8 @@ opcode stringToOpcode(const std::string& str)
 		{"if_icmpeq", if_icmpeq},
 		{"if_icmpgt", if_icmpgt},
 		{"if_icmpge", if_icmpge},
+		{"if_icmplt", if_icmplt},
+		{"if_icmple", if_icmple},
 		{"ifeq", ifeq},
 		{"ifne", ifne},
 		{"ifgt", ifgt},
