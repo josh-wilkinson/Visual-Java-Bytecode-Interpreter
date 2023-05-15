@@ -34,6 +34,11 @@ struct
 	uint64_t var1;
 	uint64_t var2;
 	uint64_t var3;
+	// bool to check if a register is being used
+	bool usingVar0 = false;
+	bool usingVar1 = false;
+	bool usingVar2 = false;
+	bool usingVar3 = false;
 } vm;
 
 // structure for every line in the program
@@ -506,36 +511,44 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				case 0:
 					value1 = vmStackPop();
 					vm.var1 = value1;
+					vm.usingVar0 = true;
 					break;
 				case 1:
 					value1 = vmStackPop();
 					vm.var1 = value1;
+					vm.usingVar1 = true;
 					break;
 				case 2:
 					value1 = vmStackPop();
 					vm.var2 = value1;
+					vm.usingVar2 = true;
 					break;
 				case 3:
 					value1 = vmStackPop();
 					vm.var3 = value1;
+					vm.usingVar3 = true;
 					break;
 				}
 				break;
 			case istore_0:
 				value1 = vmStackPop();
 				vm.var0 = value1;
+				vm.usingVar0 = true;
 				break;
 			case istore_1:
 				value1 = vmStackPop();
 				vm.var1 = value1;
+				vm.usingVar1 = true;
 				break;
 			case istore_2:
 				value1 = vmStackPop();
 				vm.var2 = value1;
+				vm.usingVar2 = true;
 				break;
 			case istore_3:
 				value1 = vmStackPop();
 				vm.var3 = value1;
+				vm.usingVar3 = true;
 				break;
 			case GOTO:
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
