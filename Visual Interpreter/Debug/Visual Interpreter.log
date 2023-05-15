@@ -1,0 +1,8 @@
+﻿  MainForm.cpp
+C:\Users\ADMIN\source\repos\Visual Interpreter\Visual Interpreter\parser.h(12,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ADMIN\source\repos\Visual Interpreter\Visual Interpreter\parser.h(30,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ADMIN\source\repos\Visual Interpreter\Visual Interpreter\parser.h(159,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ADMIN\source\repos\Visual Interpreter\Visual Interpreter\parser.h(211,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ADMIN\source\repos\Visual Interpreter\Visual Interpreter\MainForm.cpp(7,1): warning C4829: Possibly incorrect parameters to function main. Consider 'int main(Platform::Array<Platform::String^>^ argv)'
+  MainForm.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+  Visual Interpreter.vcxproj -> C:\Users\ADMIN\source\repos\Visual Interpreter\Debug\Visual Interpreter.exe
