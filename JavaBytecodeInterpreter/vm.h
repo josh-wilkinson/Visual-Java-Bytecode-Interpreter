@@ -47,6 +47,13 @@ struct codeLine
 	uint8_t opcodeNumber, instruction, operand1, operand2, operand3;
 };
 
+struct constantPoolLine
+{
+	uint8_t constantNumber;
+	std::string constantName;
+	std::string constantItem;
+};
+
 // opcodes enumerator
 typedef enum
 {

@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 	int sizeOfCodeArray = 0; // number of elements in code array
 
 	// Parse text file
-	readInstructions(code, "MathOp.txt", sizeOfCodeArray);
+	readInstructions(code, "MathOp.opcode", sizeOfCodeArray);
 	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
