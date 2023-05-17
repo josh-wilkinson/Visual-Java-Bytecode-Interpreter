@@ -1,7 +1,7 @@
 #pragma once
 #include "vm.h"
 
-void parseLine(std::string line, codeLine code[256], int& size)
+void parseCodeLine(std::string line, codeLine code[256], int& size)
 {
 	bool isCode = false;
 	std::istringstream itemReader;
@@ -89,7 +89,12 @@ void parseLine(std::string line, codeLine code[256], int& size)
 	size++;
 }
 
-void readInstructions(codeLine code[256], std::string filename, int& size)
+void parseConstantPoolLine(std::string line, constantPoolLine code[256], int& size)
+{
+
+}
+
+void readInstructions(codeLine code[256], constantPoolLine constantPool[256], std::string filename, int& sizeOfCodeArray, int& sizeOfConstantPoolArray)
 {
 	std::string line;
 	std::string item;
@@ -99,6 +104,7 @@ void readInstructions(codeLine code[256], std::string filename, int& size)
 
 	int codeCount = 0;
 	bool isCode = false;
+	bool isConstantPool = false;
 
 	if (myfile.is_open())
 	{
@@ -106,7 +112,11 @@ void readInstructions(codeLine code[256], std::string filename, int& size)
 		{
 			if (isCode)
 			{
-				parseLine(line, code, size);
+				parseCodeLine(line, code, sizeOfCodeArray);
+			}
+			if (isConstantPool)
+			{
+				parseConstantPoolLine(line, constantPool, sizeOfConstantPoolArray);
 			}
 			// read strings
 			itemReader.clear();
@@ -120,9 +130,17 @@ void readInstructions(codeLine code[256], std::string filename, int& size)
 					if (codeCount == 2)
 						isCode = true;
 				}
+				else if (item == "Constant")
+				{
+					isConstantPool = true;
+				}
 				else if (item == "return")
 				{
 					isCode = false;
+				}
+				else if (item == "{")
+				{
+					isConstantPool = false;
 				}
 			}
 		}
@@ -205,6 +223,7 @@ std::string getTextFileCodeString(std::string filename)
 	std::istringstream itemReader;
 	std::ifstream myfile(filename);
 	bool isCode = false;
+	bool isConstantPool = false;
 
 	if (myfile.is_open())
 	{
@@ -230,9 +249,14 @@ std::string getTextFileCodeString(std::string filename)
 				{
 					isCode = false;
 				}
+				else if (item == "Constant")
+				{
+					isConstantPool = true;
+				}
 				else if (item == "//")
 				{
 					isCode = false;
+					isConstantPool = false;
 				}
 				item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove A from string
 				if (isCode)

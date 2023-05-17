@@ -4,7 +4,7 @@
 int main(int argc, char* argv[])
 {
 	codeLine code[256]; // array of lines of code
-	std::map<int, std::string> constantPool;
+	constantPoolLine constantPool[256];
 	int sizeOfCodeArray = 0; // number of elements in code array
 
 	// Parse text file
