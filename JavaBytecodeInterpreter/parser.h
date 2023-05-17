@@ -25,18 +25,31 @@ void parseCodeLine(std::string line, codeLine code[256], int& size)
 			opcodeOperand += c; // store everything after the line number that is considered code
 		}
 	}
+
+	isCode = true;
+
 	// parse for line number
 	std::string lineNum = "";
 	for (int i = 0; i < line.length(); i++)
 	{
 		c = line.at(i);
 
+		if (c == 's')
+		{
+			isCode = false;
+			break;
+		}
+
 		if (c == ':')
 			break;
+			
 		lineNum += c;
 	}
-	lineNum.erase(remove(lineNum.begin(), lineNum.end(), ' '), lineNum.end()); //remove blank spaces from string
-	code[size].opcodeNumber = stoi(lineNum);
+	if (isCode)
+	{
+		lineNum.erase(remove(lineNum.begin(), lineNum.end(), ' '), lineNum.end()); //remove blank spaces from string
+		code[size].opcodeNumber = stoi(lineNum);
+	}
 	// now parse the opcodeOperand string
 	int itemCount = 0;
 	// read strings
@@ -46,7 +59,7 @@ void parseCodeLine(std::string line, codeLine code[256], int& size)
 	{
 		itemCount++;
 		itemReader >> item;
-		if (item != "Code:")
+		if (item != "Code:" && item[0] != 's')
 		{
 			if (itemCount == 1) // item 1: opcode
 			{
@@ -84,18 +97,86 @@ void parseCodeLine(std::string line, codeLine code[256], int& size)
 				else
 					break;
 			}
+			
+		}
+	}
+	if (isCode)
+		size++;	
+}
+
+void parseConstantPoolLine(std::string line, constantPoolLine cPool[256], int& size)
+{
+	bool isConstantPool = false;
+	std::istringstream itemReader;
+	std::string item;
+	std::string nameAndItem = "";
+	char c;
+
+	for (int i = 0; i < line.length(); i++)
+	{
+		c = line.at(i);
+
+		if (c == '=') // after line number
+		{
+			i = i + 2;
+			c = line.at(i);
+			isConstantPool = true;
+		}
+
+		if (isConstantPool)
+		{
+			nameAndItem += c; // store everything after the line number that is considered code
+		}
+	}
+
+	// parse for line number
+	std::string lineNum = "";
+	for (int i = 0; i < line.length(); i++)
+	{
+		c = line.at(i);
+
+		if (c == '=')
+			break;
+		lineNum += c;
+	}
+
+	lineNum.erase(remove(lineNum.begin(), lineNum.end(), '#'), lineNum.end()); //remove # from string
+	lineNum.erase(remove(lineNum.begin(), lineNum.end(), '='), lineNum.end()); //remove = from string
+	lineNum.erase(remove(lineNum.begin(), lineNum.end(), ' '), lineNum.end()); //remove blank spaces from string
+	cPool[size].constantNumber = stoi(lineNum);
+
+	// now parse the opcodeOperand string
+	int itemCount = 0;
+
+	// read strings
+	itemReader.clear();
+	itemReader.str(nameAndItem);
+
+	while (itemReader.good())
+	{
+		itemCount++;
+		itemReader >> item;
+		if (item != "Constant" && item != "pool:" && item != "{")
+		{
+			if (itemCount == 1) // item 1: opcode
+			{
+				// add to array
+				cPool[size].constantName = item;
+			}
+			else if (itemCount == 2) // item 2: possible operand
+			{
+				// add to array
+				//item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
+				cPool[size].constantItem = item;
+			}
 		}
 	}
 	size++;
 }
 
-void parseConstantPoolLine(std::string line, constantPoolLine code[256], int& size)
-{
-
-}
-
 void readInstructions(codeLine code[256], constantPoolLine constantPool[256], std::string filename, int& sizeOfCodeArray, int& sizeOfConstantPoolArray)
 {
+	std::string fn;
 	std::string line;
 	std::string item;
 
@@ -105,6 +186,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 	int codeCount = 0;
 	bool isCode = false;
 	bool isConstantPool = false;
+	bool isFilename = false;
 
 	if (myfile.is_open())
 	{
@@ -127,7 +209,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 				if (item == "Code:")
 				{
 					codeCount++;
-					if (codeCount == 2)
+					if (codeCount == 3)
 						isCode = true;
 				}
 				else if (item == "Constant")
@@ -138,14 +220,28 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 				{
 					isCode = false;
 				}
-				else if (item == "{")
+				else if (item == fn)
 				{
 					isConstantPool = false;
 				}
+
+				if (isFilename)
+				{
+					fn = item;
+					fn.erase(remove(fn.begin(), fn.end(), '"'), fn.end()); //remove " from string
+					fn.erase(remove(fn.begin(), fn.end(), '"'), fn.end()); //remove \ from string
+					fn.erase(remove(fn.begin(), fn.end(), ' '), fn.end()); //remove spaces from string
+					isFilename = false;
+				}
+
+				if (item == "from")
+				{
+					isFilename = true;
+				}
+
 			}
 		}
 	}
-
 	myfile.close();
 }
 

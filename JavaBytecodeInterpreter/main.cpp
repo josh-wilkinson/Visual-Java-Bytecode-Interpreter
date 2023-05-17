@@ -6,13 +6,14 @@ int main(int argc, char* argv[])
 	codeLine code[256]; // array of lines of code
 	constantPoolLine constantPool[256];
 	int sizeOfCodeArray = 0; // number of elements in code array
+	int sizeOfCPoolArray = 0;
 
 	// Parse text file
-	readInstructions(code, "MathOp.opcode", sizeOfCodeArray);
+	readInstructions(code, constantPool, "MethodCallExample.opcode", sizeOfCodeArray, sizeOfCPoolArray);
 	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
-		std::cout << "Line: " << byteToReadableFormat(code[i].lineNumber) << std::endl;
+		std::cout << "Line: " << byteToReadableFormat(code[i].opcodeNumber) << std::endl;
 		std::cout << "Code: " << byteToReadableFormat(code[i].instruction) << std::endl;
 		std::cout << "Op.1: " << byteToReadableFormat(code[i].operand1) << std::endl;
 		std::cout << "Op.2: " << byteToReadableFormat(code[i].operand2) << std::endl;
@@ -20,6 +21,14 @@ int main(int argc, char* argv[])
 		std::cout << std::endl;
 	}
 	*/
+	for (int i = 0; i < sizeOfCPoolArray; i++)
+	{
+		std::cout << "Line: " << constantPool[i].constantNumber << std::endl;
+		std::cout << "1: " << constantPool[i].constantName << std::endl;
+		std::cout << "2: " << constantPool[i].constantItem << std::endl;
+		std::cout << std::endl;
+	}
+	
 	//std::cout << getTextFileCodeString("Sum.txt");
 	
 

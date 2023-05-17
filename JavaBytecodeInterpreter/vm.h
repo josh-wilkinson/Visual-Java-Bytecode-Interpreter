@@ -44,12 +44,12 @@ struct
 // structure for every line in the program
 struct codeLine
 {
-	uint8_t opcodeNumber, instruction, operand1, operand2, operand3;
+	uint64_t opcodeNumber, instruction, operand1, operand2, operand3;
 };
 
 struct constantPoolLine
 {
-	uint8_t constantNumber;
+	uint64_t constantNumber;
 	std::string constantName;
 	std::string constantItem;
 };
@@ -586,6 +586,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			return ERROR_UNKNOWN_OPCODE;
 		default:
 			vm.finishedExecution = true;
+			std::cout << "Unknown opcode!!" << std::endl;
 			return ERROR_UNKNOWN_OPCODE;
 			break;
 		}
