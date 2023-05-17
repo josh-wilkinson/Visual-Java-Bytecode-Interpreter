@@ -63,6 +63,7 @@ typedef enum
 	iconst_3,
 	iconst_4,
 	iconst_5,
+	idiv,
 	if_icmpne,
 	if_icmpeq,
 	if_icmpgt,
@@ -207,6 +208,11 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			break;
 		case iconst_5:
 			vmStackPush(5);
+			break;
+		case idiv:
+			value1 = vmStackPop();
+			value2 = vmStackPop();
+			vmStackPush(value2 / value1);
 			break;
 		case if_icmpne:
 			value1 = vmStackPop();
@@ -607,10 +613,13 @@ opcode stringToOpcode(const std::string& str)
 		{"iconst_3", iconst_3},
 		{"iconst_4", iconst_4},
 		{"iconst_5", iconst_5},
+		{"idiv", idiv},
 		{"if_icmpne", if_icmpne},
 		{"if_icmpeq", if_icmpeq},
 		{"if_icmpgt", if_icmpgt},
 		{"if_icmpge", if_icmpge},
+		{"if_icmplt", if_icmplt},
+		{"if_icmple", if_icmple},
 		{"ifeq", ifeq},
 		{"ifne", ifne},
 		{"ifgt", ifgt},
