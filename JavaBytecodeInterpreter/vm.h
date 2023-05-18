@@ -39,6 +39,8 @@ struct
 	bool usingVar1 = false;
 	bool usingVar2 = false;
 	bool usingVar3 = false;
+	// Strings (method name)
+	std::string methodName;
 } vm;
 
 // structure for every line in the program
