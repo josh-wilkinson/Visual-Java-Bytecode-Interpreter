@@ -10,18 +10,19 @@ int main(int argc, char* argv[])
 
 	// Parse text file
 	readInstructions(code, constantPool, "Print.opcode", sizeOfCodeArray, sizeOfCPoolArray);
-	/*
+	
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
 		std::cout << "Line: " << byteToReadableFormat(code[i].opcodeNumber) << std::endl;
 		std::cout << "Code: " << byteToReadableFormat(code[i].instruction) << std::endl;
-		std::cout << "Op.1: " << byteToReadableFormat(code[i].operand1) << std::endl;
-		std::cout << "Op.2: " << byteToReadableFormat(code[i].operand2) << std::endl;
-		std::cout << "Op.3: " << byteToReadableFormat(code[i].operand3) << std::endl;
+		std::cout << "Method name: " << code[i].methodName << std::endl;
+		//std::cout << "Op.1: " << byteToReadableFormat(code[i].operand1) << std::endl;
+		//std::cout << "Op.2: " << byteToReadableFormat(code[i].operand2) << std::endl;
+		//std::cout << "Op.3: " << byteToReadableFormat(code[i].operand3) << std::endl;
 		std::cout << std::endl;
 	}
-	*/
 	
+	/*
 	for (int i = 0; i < sizeOfCPoolArray; i++)
 	{
 		std::cout << "Line: " << constantPool[i].constantNumber << std::endl;
@@ -29,7 +30,7 @@ int main(int argc, char* argv[])
 		std::cout << "2: " << constantPool[i].constantItem << std::endl;
 		std::cout << std::endl;
 	}
-	
+	*/
 	//std::cout << getTextFileCodeString("Sum.txt");
 	
 

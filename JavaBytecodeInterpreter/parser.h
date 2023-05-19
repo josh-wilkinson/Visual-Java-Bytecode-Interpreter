@@ -1,13 +1,16 @@
 #pragma once
 #include "vm.h"
 
-void parseCodeLine(std::string line, codeLine code[256], int& size)
+void parseCodeLine(std::string line, codeLine code[256], int& size, std::string nameOfMethod)
 {
 	bool isCode = false;
 	std::istringstream itemReader;
 	std::string item;
 	std::string opcodeOperand = "";
 	char c;
+
+	// method name / descriptor
+	code[size].methodName = nameOfMethod;
 
 	for (int i = 0; i < line.length(); i++)
 	{
@@ -183,6 +186,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 	std::string fn;
 	std::string line;
 	std::string item;
+	std::string methodName;
 
 	std::istringstream itemReader;
 	std::ifstream myfile(filename);
@@ -191,6 +195,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 	bool isCode = false;
 	bool isConstantPool = false;
 	bool isFilename = false;
+	bool foundDescriptor = false;
 
 	if (myfile.is_open())
 	{
@@ -198,7 +203,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 		{
 			if (isCode)
 			{
-				parseCodeLine(line, code, sizeOfCodeArray);
+				parseCodeLine(line, code, sizeOfCodeArray, methodName);
 			}
 			if (isConstantPool)
 			{
@@ -213,7 +218,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 				if (item == "Code:")
 				{
 					codeCount++;
-					if (codeCount == 2)
+					if (codeCount >= 1)
 						isCode = true;
 				}
 				else if (item == "Constant")
@@ -227,6 +232,18 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 				else if (item == fn)
 				{
 					isConstantPool = false;
+				}
+
+				if (foundDescriptor)
+				{
+					methodName = item;
+					foundDescriptor = false;
+				}
+
+				if (item == "descriptor:")
+				{
+					foundDescriptor = true;
+
 				}
 
 				if (isFilename)
