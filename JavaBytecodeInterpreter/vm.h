@@ -168,7 +168,9 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 	}
 
 	bool branching = false;
+	bool methodCalling = false;
 
+	int methodCallPosition = 0;
 	int beginningOfMethod;
 	int counter = 0;
 	uint64_t value1;
@@ -498,6 +500,24 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			vmStackPush(value1);
 			break;
 		case invokespecial:
+			// Find the method in the code array and jump to that
+			//methodCalling = true;
+
+			value1 = program[vm.i].operand1;
+
+			// getting method name called, e.g. java/lang/Object."<init>":()V
+			//utf8 = cPool[value1 + 2].constantItem + cPool[value1 + 3].constantItem + cPool[value1 + 4].constantItem;
+			utf8 = "([Ljava/lang/String;)V";
+
+			for (int j = 0; j < sizeOfCodeArray; j++)
+			{
+				if (program[j].methodName == utf8)
+				{
+					vm.i = j-1;
+					std::cout << "FOUND METHOD " << utf8 << std::endl;
+					break;
+				}
+			}
 			break;
 		case invokestatic:
 			break;
@@ -611,6 +631,8 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		}
 		if (!branching)
 			vm.i++;
+		if (!methodCalling)
+			methodCallPosition = vm.i;
 	} while (!vm.steppingThroughCode);
 
 	if (vm.steppingThroughCode)

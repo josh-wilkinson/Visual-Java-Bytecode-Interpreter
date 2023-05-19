@@ -243,7 +243,6 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 				if (item == "descriptor:")
 				{
 					foundDescriptor = true;
-
 				}
 
 				if (isFilename)
