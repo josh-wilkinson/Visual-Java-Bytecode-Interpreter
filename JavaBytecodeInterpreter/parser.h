@@ -152,22 +152,26 @@ void parseConstantPoolLine(std::string line, constantPoolLine cPool[256], int& s
 	itemReader.clear();
 	itemReader.str(nameAndItem);
 
+	cPool[size].constantItem = "";
 	while (itemReader.good())
 	{
 		itemCount++;
 		itemReader >> item;
 		if (item != "Constant" && item != "pool:" && item != "{")
 		{
+			if (item == "//")
+				break;
+
 			if (itemCount == 1) // item 1: opcode
 			{
 				// add to array
 				cPool[size].constantName = item;
 			}
-			else if (itemCount == 2) // item 2: possible operand
+			else if (itemCount >= 2) // item 2: possible operand
 			{
 				// add to array
 				//item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
-				cPool[size].constantItem = item;
+				cPool[size].constantItem += item;
 			}
 		}
 	}
@@ -209,7 +213,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 				if (item == "Code:")
 				{
 					codeCount++;
-					if (codeCount == 3)
+					if (codeCount == 2)
 						isCode = true;
 				}
 				else if (item == "Constant")

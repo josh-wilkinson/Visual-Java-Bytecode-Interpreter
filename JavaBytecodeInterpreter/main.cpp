@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	int sizeOfCPoolArray = 0;
 
 	// Parse text file
-	readInstructions(code, constantPool, "MethodCallExample.opcode", sizeOfCodeArray, sizeOfCPoolArray);
+	readInstructions(code, constantPool, "Print.opcode", sizeOfCodeArray, sizeOfCPoolArray);
 	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 		std::cout << std::endl;
 	}
 	*/
+	/*
 	for (int i = 0; i < sizeOfCPoolArray; i++)
 	{
 		std::cout << "Line: " << constantPool[i].constantNumber << std::endl;
@@ -28,14 +29,14 @@ int main(int argc, char* argv[])
 		std::cout << "2: " << constantPool[i].constantItem << std::endl;
 		std::cout << std::endl;
 	}
-	
+	*/
 	//std::cout << getTextFileCodeString("Sum.txt");
 	
 
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
 	{		
-		interpretResult result = vmInterpret(code, sizeOfCodeArray);
+		interpretResult result = vmInterpret(code, constantPool, sizeOfCodeArray, sizeOfCPoolArray);
 		
 		std::cout << "var 0: " << vm.var0 << std::endl;
 		std::cout << "var 1: " << vm.var1 << std::endl;

@@ -39,14 +39,14 @@ struct
 	bool usingVar1 = false;
 	bool usingVar2 = false;
 	bool usingVar3 = false;
-	// Strings (method name)
-	std::string methodName;
 } vm;
 
 // structure for every line in the program
 struct codeLine
 {
 	uint64_t opcodeNumber, instruction, operand1, operand2, operand3;
+	// String (method name)
+	std::string methodName;
 };
 
 struct constantPoolLine
@@ -65,6 +65,7 @@ typedef enum
 	aload_2,
 	aload_3,
 	bipush,
+	getstatic,
 	iadd,
 	iconst_0,
 	iconst_1,
@@ -103,6 +104,7 @@ typedef enum
 	istore_1,
 	istore_2,
 	istore_3,
+	ldc,
 	GOTO,
 	OP_DONE, // stop execution
 	NA = 257 // default - opcode does not exist
@@ -158,7 +160,7 @@ void jumpToOpcodeNumber(codeLine program[], int index, bool branching, int size)
 }
 
 // interpreter code
-interpretResult vmInterpret(codeLine program[256], int size) // program goes through code here
+interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {
 	if (!vm.steppingThroughCode)
 	{
@@ -171,6 +173,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 	int counter = 0;
 	uint64_t value1;
 	uint64_t value2;
+	std::string utf8;
 
 	std::cout << "Interpreter started" << std::endl;
 	do
@@ -194,6 +197,8 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			break;
 		case bipush:
 			vmStackPush(program[vm.i].operand1);
+			break;
+		case getstatic:
 			break;
 		case iadd:
 			value1 = vmStackPop();
@@ -231,7 +236,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -250,7 +255,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -269,7 +274,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -288,7 +293,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -308,7 +313,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				uint64_t lineNum = program[vm.i].operand1;
 
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -327,7 +332,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -346,7 +351,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -364,7 +369,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -382,7 +387,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -400,7 +405,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -418,7 +423,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -436,7 +441,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -497,6 +502,16 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 		case invokestatic:
 			break;
 		case invokevirtual:
+			value1 = vmStackPop();
+			value2 = program[vm.i].operand1 + 3;
+			// invoke virtual method
+
+			// check for PrintStream, then output to console
+			utf8 = cPool[value2].constantItem;
+
+			if (utf8 == "print")
+				std::cout << cPool[value1].constantItem << std::endl;
+
 			break;
 		case imul:
 			value1 = vmStackPop();
@@ -565,9 +580,13 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			vm.var3 = value1;
 			vm.usingVar3 = true;
 			break;
+		case ldc:
+			value1 = program[vm.i].operand1;
+			vmStackPush(value1);
+			break;
 		case GOTO:
 			beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-			for (int j = beginningOfMethod; j < size; j++)
+			for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].opcodeNumber == program[vm.i].operand1)
 				{
@@ -616,6 +635,7 @@ opcode stringToOpcode(const std::string& str)
 		{"aload_2", aload_2},
 		{"aload_3", aload_3},
 		{"bipush", bipush},
+		{"getstatic", getstatic},
 		{"iadd", iadd},
 		{"iconst_0", iconst_0},
 		{"iconst_1", iconst_1},
@@ -654,6 +674,7 @@ opcode stringToOpcode(const std::string& str)
 		{"istore_1", istore_1},
 		{"istore_2", istore_2},
 		{"istore_3", istore_3},
+		{"ldc", ldc},
 		{"goto", GOTO},
 		{"return", OP_DONE},
 	};
