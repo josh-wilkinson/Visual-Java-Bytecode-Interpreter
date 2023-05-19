@@ -505,13 +505,12 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			value1 = vmStackPop();
 			value2 = program[vm.i].operand1 + 3;
 			// invoke virtual method
-
 			// check for PrintStream, then output to console
 			utf8 = cPool[value2].constantItem;
-
 			if (utf8 == "print")
+				std::cout << cPool[value1].constantItem;
+			else if (utf8 == "println")
 				std::cout << cPool[value1].constantItem << std::endl;
-
 			break;
 		case imul:
 			value1 = vmStackPop();
@@ -598,7 +597,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 					break;
 			}
 			break;
-
 		case OP_DONE:
 			vm.finishedExecution = true;
 			return SUCCESS;

@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 		std::cout << std::endl;
 	}
 	*/
-	/*
+	
 	for (int i = 0; i < sizeOfCPoolArray; i++)
 	{
 		std::cout << "Line: " << constantPool[i].constantNumber << std::endl;
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 		std::cout << "2: " << constantPool[i].constantItem << std::endl;
 		std::cout << std::endl;
 	}
-	*/
+	
 	//std::cout << getTextFileCodeString("Sum.txt");
 	
 
