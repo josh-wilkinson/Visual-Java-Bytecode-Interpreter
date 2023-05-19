@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	int sizeOfCPoolArray = 0;
 
 	// Parse text file
-	readInstructions(code, constantPool, "Print.opcode", sizeOfCodeArray, sizeOfCPoolArray);
+	readInstructions(code, constantPool, "MethodCallExample.opcode", sizeOfCodeArray, sizeOfCPoolArray);
 	
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
