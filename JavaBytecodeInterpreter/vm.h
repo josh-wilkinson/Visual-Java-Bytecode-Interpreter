@@ -24,10 +24,15 @@ struct
 	bool steppingThroughCode = false;
 	bool finishedExecution = false;
 	int elementsInStack = 0;
+	int elementsInMethodStack = 0;
 
 	// Fixed-size stack
 	uint64_t stack[STACK_MAX];
 	uint64_t* stack_top;
+
+	// Fixed-size stack
+	uint64_t methodStack[STACK_MAX];
+	uint64_t* method_stack_top;
 
 	// Registers
 	uint64_t var0;
@@ -125,6 +130,7 @@ void vmReset()
 	vm.stack_top = vm.stack;
 }
 
+// virtual machine stack functions
 void vmStackPush(uint64_t value)
 {
 	vm.elementsInStack++;
@@ -137,6 +143,21 @@ uint64_t vmStackPop(void)
 	vm.elementsInStack--;
 	vm.stack_top--; // previous space in memory
 	return *vm.stack_top;
+}
+
+// stack functions for method locations in the program array
+void methodStackPush(uint64_t value)
+{
+	vm.elementsInMethodStack++;
+	*vm.method_stack_top = value;
+	vm.method_stack_top++; // next space in memory
+}
+
+uint64_t methodStackPop(void)
+{
+	vm.elementsInMethodStack--;
+	vm.method_stack_top--; // previous space in memory
+	return *vm.method_stack_top;
 }
 
 void jumpToOpcodeNumber(codeLine program[], int index, bool branching, int size) // same as GOTO
