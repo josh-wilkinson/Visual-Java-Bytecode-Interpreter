@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 
 	// Parse text file
 	readInstructions(code, constantPool, "MethodCallExample.opcode", sizeOfCodeArray, sizeOfCPoolArray);
-	
+	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
 		std::cout << "Line: " << byteToReadableFormat(code[i].opcodeNumber) << std::endl;
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 		//std::cout << "Op.3: " << byteToReadableFormat(code[i].operand3) << std::endl;
 		std::cout << std::endl;
 	}
-	
+	*/
 	/*
 	for (int i = 0; i < sizeOfCPoolArray; i++)
 	{

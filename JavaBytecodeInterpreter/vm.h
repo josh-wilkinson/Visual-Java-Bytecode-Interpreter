@@ -128,6 +128,7 @@ void vmReset()
 	std::cout << "Reset VM state" << std::endl;
 	vm = decltype(vm){ NULL };
 	vm.stack_top = vm.stack;
+	vm.method_stack_top = vm.methodStack;
 }
 
 // virtual machine stack functions
@@ -190,8 +191,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 
 	bool branching = false;
 	bool methodCalling = false;
-
-	int methodCallPosition = 0;
 	int beginningOfMethod;
 	int counter = 0;
 	uint64_t value1;
@@ -203,8 +202,9 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 	{
 		uint8_t instruction = program[vm.i].instruction;
 		branching = false;
-		counter = program[vm.i].opcodeNumber;
-		std::cout << "Counter: " << counter << std::endl;
+		methodCalling = false;
+		counter = program[vm.i].instruction;
+		std::cout << "Counter: " << vm.i << std::endl;
 		switch (instruction)
 		{
 			// All of the opcode instructions are implemented here!
@@ -528,7 +528,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			{
 				if (program[j].methodName == utf8)
 				{
-					vm.i = j-1;
+					vm.i = j - 1;
 					std::cout << "FOUND METHOD " << utf8 << std::endl;
 					break;
 				}
@@ -538,13 +538,15 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// Find the method in the code array and jump to that
 			methodCalling = true;
 			value1 = program[vm.i].operand1;
+			value2 = vm.i;
 			// getting method name called, e.g. java/lang/Object."<init>":()V
 			utf8 = cPool[value1 + 4].constantItem;
 			for (int j = 0; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].methodName == utf8)
 				{
-					vm.i = j - 1;
+					methodStackPush(value2);
+					vm.i = j;
 					std::cout << "FOUND METHOD " << utf8 << std::endl;
 					break;
 				}
@@ -648,21 +650,33 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			}
 			break;
 		case OP_DONE:
-			vm.finishedExecution = true;
-			return SUCCESS;
+			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
+			{
+				vm.finishedExecution = true;
+				return SUCCESS;
+			}
+			else
+			{
+				std::cout << "JUMPING FROM " << vm.i;
+				value1 = methodStackPop() + 1;
+				vm.i = value1;
+				methodCalling = true;
+				std::cout << " TO " << vm.i << std::endl;
+			}
+			//std::cout << program[vm.i].methodName << std::endl;
+			break;			
 		case NA:
 			vm.finishedExecution = true;
 			return ERROR_UNKNOWN_OPCODE;
+			break;
 		default:
 			vm.finishedExecution = true;
 			std::cout << "Unknown opcode!!" << std::endl;
 			return ERROR_UNKNOWN_OPCODE;
 			break;
 		}
-		if (!branching)
+		if (!branching && !methodCalling)
 			vm.i++;
-		if (!methodCalling)
-			methodCallPosition = vm.i;
 	} while (!vm.steppingThroughCode);
 
 	if (vm.steppingThroughCode)
