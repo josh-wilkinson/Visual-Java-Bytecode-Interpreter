@@ -18,9 +18,15 @@
     <ClCompile Include="MainForm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JavaCode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainForm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JavaCode.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

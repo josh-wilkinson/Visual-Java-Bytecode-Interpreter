@@ -10,6 +10,8 @@
 #include "vm.h"
 #include "parser.h"
 
+#include "JavaCode.h"
+
 
 namespace VisualInterpreter {
 
@@ -31,6 +33,7 @@ namespace VisualInterpreter {
 	/// </summary>
 	public ref class MainForm : public System::Windows::Forms::Form
 	{
+		
 	public:
 		MainForm(void)
 		{
@@ -87,10 +90,12 @@ namespace VisualInterpreter {
 	private: System::Windows::Forms::RichTextBox^ stackTextBox;
 	private: System::Windows::Forms::ToolStripMenuItem^ clearToolStripMenuItem;
 	private: System::Windows::Forms::FlowLayoutPanel^ flowLayoutPanel7;
-	private: System::Windows::Forms::Label^ javaCodeLabel;
+	private: System::Windows::Forms::Label^ outputLabel;
+
 
 	private: System::Windows::Forms::FlowLayoutPanel^ flowLayoutPanel8;
-	private: System::Windows::Forms::RichTextBox^ javaCodeTextBox;
+	private: System::Windows::Forms::RichTextBox^ outputTextBox;
+
 	private: System::Windows::Forms::ToolStripMenuItem^ viewToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ javaCodeToolStripMenuItem;
 
@@ -124,6 +129,7 @@ namespace VisualInterpreter {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MainForm::typeid));
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->openToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -131,6 +137,8 @@ namespace VisualInterpreter {
 			this->exitToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->optionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->viewToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->javaCodeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->flowLayoutPanel1 = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->runButton = (gcnew System::Windows::Forms::Button());
 			this->stepForwardButton = (gcnew System::Windows::Forms::Button());
@@ -155,11 +163,9 @@ namespace VisualInterpreter {
 			this->stackLabel = (gcnew System::Windows::Forms::Label());
 			this->stackTextBox = (gcnew System::Windows::Forms::RichTextBox());
 			this->flowLayoutPanel7 = (gcnew System::Windows::Forms::FlowLayoutPanel());
-			this->javaCodeLabel = (gcnew System::Windows::Forms::Label());
+			this->outputLabel = (gcnew System::Windows::Forms::Label());
 			this->flowLayoutPanel8 = (gcnew System::Windows::Forms::FlowLayoutPanel());
-			this->javaCodeTextBox = (gcnew System::Windows::Forms::RichTextBox());
-			this->viewToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->javaCodeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->outputTextBox = (gcnew System::Windows::Forms::RichTextBox());
 			this->menuStrip1->SuspendLayout();
 			this->flowLayoutPanel1->SuspendLayout();
 			this->tableLayoutPanel1->SuspendLayout();
@@ -231,6 +237,20 @@ namespace VisualInterpreter {
 			this->helpToolStripMenuItem->Text = L"Help";
 			this->helpToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::helpToolStripMenuItem_Click);
 			// 
+			// viewToolStripMenuItem
+			// 
+			this->viewToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->javaCodeToolStripMenuItem });
+			this->viewToolStripMenuItem->Name = L"viewToolStripMenuItem";
+			this->viewToolStripMenuItem->Size = System::Drawing::Size(65, 29);
+			this->viewToolStripMenuItem->Text = L"View";
+			// 
+			// javaCodeToolStripMenuItem
+			// 
+			this->javaCodeToolStripMenuItem->Name = L"javaCodeToolStripMenuItem";
+			this->javaCodeToolStripMenuItem->Size = System::Drawing::Size(270, 34);
+			this->javaCodeToolStripMenuItem->Text = L"Java Code";
+			this->javaCodeToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::javaCodeToolStripMenuItem_Click);
+			// 
 			// flowLayoutPanel1
 			// 
 			this->flowLayoutPanel1->Controls->Add(this->runButton);
@@ -276,6 +296,8 @@ namespace VisualInterpreter {
 			// 
 			// tableLayoutPanel1
 			// 
+			this->tableLayoutPanel1->AutoSize = true;
+			this->tableLayoutPanel1->AutoSizeMode = System::Windows::Forms::AutoSizeMode::GrowAndShrink;
 			this->tableLayoutPanel1->ColumnCount = 2;
 			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
 				35.48904F)));
@@ -288,7 +310,7 @@ namespace VisualInterpreter {
 			this->tableLayoutPanel1->RowCount = 1;
 			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
 			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 20)));
-			this->tableLayoutPanel1->Size = System::Drawing::Size(1871, 919);
+			this->tableLayoutPanel1->Size = System::Drawing::Size(1868, 919);
 			this->tableLayoutPanel1->TabIndex = 2;
 			// 
 			// opcodeTextBox
@@ -297,7 +319,7 @@ namespace VisualInterpreter {
 			this->opcodeTextBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->opcodeTextBox->Font = (gcnew System::Drawing::Font(L"Consolas", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->opcodeTextBox->Location = System::Drawing::Point(666, 3);
+			this->opcodeTextBox->Location = System::Drawing::Point(665, 3);
 			this->opcodeTextBox->Name = L"opcodeTextBox";
 			this->opcodeTextBox->ReadOnly = true;
 			this->opcodeTextBox->Size = System::Drawing::Size(1136, 846);
@@ -313,7 +335,7 @@ namespace VisualInterpreter {
 			this->flowLayoutPanel2->Controls->Add(this->flowLayoutPanel7);
 			this->flowLayoutPanel2->Location = System::Drawing::Point(3, 3);
 			this->flowLayoutPanel2->Name = L"flowLayoutPanel2";
-			this->flowLayoutPanel2->Size = System::Drawing::Size(657, 913);
+			this->flowLayoutPanel2->Size = System::Drawing::Size(656, 913);
 			this->flowLayoutPanel2->TabIndex = 1;
 			// 
 			// flowLayoutPanel3
@@ -481,59 +503,46 @@ namespace VisualInterpreter {
 			// 
 			// flowLayoutPanel7
 			// 
-			this->flowLayoutPanel7->Controls->Add(this->javaCodeLabel);
+			this->flowLayoutPanel7->Controls->Add(this->outputLabel);
 			this->flowLayoutPanel7->Controls->Add(this->flowLayoutPanel8);
 			this->flowLayoutPanel7->Location = System::Drawing::Point(3, 408);
 			this->flowLayoutPanel7->Name = L"flowLayoutPanel7";
 			this->flowLayoutPanel7->Size = System::Drawing::Size(613, 452);
 			this->flowLayoutPanel7->TabIndex = 3;
 			// 
-			// javaCodeLabel
+			// outputLabel
 			// 
-			this->javaCodeLabel->AutoSize = true;
-			this->javaCodeLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 26, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->outputLabel->AutoSize = true;
+			this->outputLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 26, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->javaCodeLabel->Location = System::Drawing::Point(3, 0);
-			this->javaCodeLabel->Name = L"javaCodeLabel";
-			this->javaCodeLabel->Size = System::Drawing::Size(274, 59);
-			this->javaCodeLabel->TabIndex = 1;
-			this->javaCodeLabel->Text = L"Java Code";
+			this->outputLabel->Location = System::Drawing::Point(3, 0);
+			this->outputLabel->Name = L"outputLabel";
+			this->outputLabel->Size = System::Drawing::Size(180, 59);
+			this->outputLabel->TabIndex = 1;
+			this->outputLabel->Text = L"Output";
 			// 
 			// flowLayoutPanel8
 			// 
-			this->flowLayoutPanel8->Controls->Add(this->javaCodeTextBox);
+			this->flowLayoutPanel8->Controls->Add(this->outputTextBox);
 			this->flowLayoutPanel8->Location = System::Drawing::Point(3, 62);
 			this->flowLayoutPanel8->Name = L"flowLayoutPanel8";
 			this->flowLayoutPanel8->Size = System::Drawing::Size(610, 390);
 			this->flowLayoutPanel8->TabIndex = 3;
 			// 
-			// javaCodeTextBox
+			// outputTextBox
 			// 
-			this->javaCodeTextBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
+			this->outputTextBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
 				static_cast<System::Int32>(static_cast<System::Byte>(64)));
-			this->javaCodeTextBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->javaCodeTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->outputTextBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->outputTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->javaCodeTextBox->ForeColor = System::Drawing::SystemColors::Window;
-			this->javaCodeTextBox->Location = System::Drawing::Point(3, 3);
-			this->javaCodeTextBox->Name = L"javaCodeTextBox";
-			this->javaCodeTextBox->ReadOnly = true;
-			this->javaCodeTextBox->Size = System::Drawing::Size(607, 376);
-			this->javaCodeTextBox->TabIndex = 0;
-			this->javaCodeTextBox->Text = L"";
-			// 
-			// viewToolStripMenuItem
-			// 
-			this->viewToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->javaCodeToolStripMenuItem });
-			this->viewToolStripMenuItem->Name = L"viewToolStripMenuItem";
-			this->viewToolStripMenuItem->Size = System::Drawing::Size(65, 29);
-			this->viewToolStripMenuItem->Text = L"View";
-			// 
-			// javaCodeToolStripMenuItem
-			// 
-			this->javaCodeToolStripMenuItem->Name = L"javaCodeToolStripMenuItem";
-			this->javaCodeToolStripMenuItem->Size = System::Drawing::Size(270, 34);
-			this->javaCodeToolStripMenuItem->Text = L"Java Code";
+			this->outputTextBox->ForeColor = System::Drawing::SystemColors::Window;
+			this->outputTextBox->Location = System::Drawing::Point(3, 3);
+			this->outputTextBox->Name = L"outputTextBox";
+			this->outputTextBox->ReadOnly = true;
+			this->outputTextBox->Size = System::Drawing::Size(607, 376);
+			this->outputTextBox->TabIndex = 0;
+			this->outputTextBox->Text = L"";
 			// 
 			// MainForm
 			// 
@@ -545,10 +554,12 @@ namespace VisualInterpreter {
 			this->Controls->Add(this->tableLayoutPanel1);
 			this->Controls->Add(this->flowLayoutPanel1);
 			this->Controls->Add(this->menuStrip1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MainMenuStrip = this->menuStrip1;
 			this->MaximumSize = System::Drawing::Size(3840, 2160);
 			this->MinimumSize = System::Drawing::Size(1920, 1080);
 			this->Name = L"MainForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"Visual Java Bytecode Interpreter";
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
@@ -618,7 +629,8 @@ namespace VisualInterpreter {
 				String^ OpcodeFilePath = gcnew String(OpcodeDisplayFileName.c_str());				
 				// Trying to open file... fn
 				String^ OpcodeFile = File::ReadAllText(OpcodeFilePath);
-				this->javaCodeTextBox->Text = JavaFile; // add code to textbox		
+				//this->javaCodeTextBox->Text = JavaFile; // add code to textbox
+
 				this->opcodeTextBox->Text = OpcodeFile;
 				MessageBox::Show("Created " + OpcodeFilePath);
 				myStream->Close();
@@ -728,7 +740,7 @@ namespace VisualInterpreter {
 	private: System::Void clearToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 		reset();
 		this->opcodeTextBox->Clear();
-		this->javaCodeTextBox->Clear();
+		this->outputTextBox->Clear();
 		disableButtons();
 	}
 	
@@ -755,6 +767,8 @@ namespace VisualInterpreter {
 
 	void update()
 	{
+		String^ temp = gcnew String(vm.currentOutput.c_str());
+		outputTextBox->Text = temp;
 		// interpreter / opcodeTextbox updates	
 		if (vm.usingVar0)
 			this->registerTextBox1->Text = "" + vm.var0;		
@@ -794,6 +808,7 @@ namespace VisualInterpreter {
 		this->registerTextBox3->Text = "";
 		this->registerTextBox4->Text = "";
 		this->stackTextBox->Text = "";
+		this->outputTextBox->Text = "";
 		sizeOfCodeArray = 0;
 		vmReset();
 	}
@@ -809,6 +824,15 @@ namespace VisualInterpreter {
 		}
 	}
 
+	void consoleTextBoxOutput() // updates the console with new text from the interpreter
+	{
+		String^ temp = gcnew String(vm.currentOutput.c_str());
+		outputTextBox->Text += temp;
+	}
 	
+	private: System::Void javaCodeToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		
+	}
 };
 }

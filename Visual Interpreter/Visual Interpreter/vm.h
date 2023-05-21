@@ -44,6 +44,8 @@ struct
 	bool usingVar1 = false;
 	bool usingVar2 = false;
 	bool usingVar3 = false;
+	// Console output
+	std::string currentOutput = "";
 } vm;
 
 // structure for every line in the program
@@ -52,6 +54,7 @@ struct codeLine
 	uint64_t opcodeNumber, instruction, operand1, operand2, operand3;
 	// String (method name)
 	std::string methodName;
+	bool breakPoint = false;
 };
 
 struct constantPoolLine
@@ -182,6 +185,39 @@ void jumpToOpcodeNumber(codeLine program[], int index, bool branching, int size)
 	}
 }
 
+void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, int endOfMethod, bool& branching)
+{
+	for (int i = 0; i < sizeOfCodeArray; i++)
+	{
+		if (program[i].methodName == program[vm.i].methodName)
+		{
+			beginningOfMethod = i;
+			break;
+		}
+	}
+
+	for (int i = beginningOfMethod; i < sizeOfCodeArray; i++)
+	{
+		if (program[i].methodName != program[vm.i].methodName)
+		{
+			endOfMethod = i - 1;
+			break;
+		}
+	}
+
+	for (int j = beginningOfMethod; j < endOfMethod; j++)
+	{
+		if (program[j].opcodeNumber == program[vm.i].operand1)
+		{
+			vm.i = j;
+			branching = true;
+			break;
+		}
+		else if (program[j].instruction == OP_DONE)
+			break;
+	}
+}
+
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {
@@ -192,7 +228,8 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 
 	bool branching = false;
 	bool methodCalling = false;
-	int beginningOfMethod;
+	int beginningOfMethod = 0;
+	int endOfMethod = sizeOfCodeArray;
 	int counter = 0;
 	uint64_t value1;
 	uint64_t value2;
@@ -206,6 +243,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		methodCalling = false;
 		counter = program[vm.i].instruction;
 		std::cout << "Counter: " << vm.i << std::endl;
+
 		switch (instruction)
 		{
 			// All of the opcode instructions are implemented here!
@@ -258,17 +296,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value2 << " != " << value1 << std::endl;
 			if (value2 != value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmpeq:
@@ -277,17 +305,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value2 << " == " << value1 << std::endl;
 			if (value2 == value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmpgt:
@@ -296,17 +314,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value2 << " > " << value1 << std::endl;
 			if (value2 > value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmplt:
@@ -315,17 +323,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value2 << " < " << value1 << std::endl;
 			if (value2 < value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmple:
@@ -334,18 +332,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value2 << " <= " << value1 << std::endl;
 			if (value2 <= value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmpge:
@@ -354,17 +341,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value2 << " >= " << value1 << std::endl;
 			if (value2 >= value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 
 			break;
@@ -373,17 +350,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value1 << " is 0 " << std::endl;
 			if (value1 == 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case ifne:
@@ -391,17 +358,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value1 << " is not 0 " << std::endl;
 			if (value1 != 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case ifgt:
@@ -409,17 +366,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value1 << " is > 0 " << std::endl;
 			if (value1 > 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case ifge:
@@ -427,17 +374,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value1 << " is >= 0 " << std::endl;
 			if (value1 >= 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case iflt:
@@ -445,17 +382,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value1 << " is < 0 " << std::endl;
 			if (value1 < 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case ifle:
@@ -463,17 +390,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			std::cout << "?: " << value1 << " is <= 0 " << std::endl;
 			if (value1 <= 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case iinc:
@@ -561,9 +478,9 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// check for PrintStream, then output to console
 			utf8 = cPool[value2].constantItem;
 			if (utf8 == "print")
-				std::cout << cPool[value1].constantItem;
+				vm.currentOutput += cPool[value1].constantItem;
 			else if (utf8 == "println")
-				std::cout << cPool[value1].constantItem << std::endl;
+				vm.currentOutput += cPool[value1].constantItem + "\n";
 			break;
 		case imul:
 			value1 = vmStackPop();
@@ -637,18 +554,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			vmStackPush(value1);
 			break;
 		case GOTO:
-			beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-			for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-			{
-				if (program[j].opcodeNumber == program[vm.i].operand1)
-				{
-					vm.i = j;
-					branching = true;
-					break;
-				}
-				else if (program[j].instruction == OP_DONE)
-					break;
-			}
+			branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			break;
 		case OP_DONE:
 			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
