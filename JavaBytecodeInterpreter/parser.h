@@ -165,12 +165,12 @@ void parseConstantPoolLine(std::string line, constantPoolLine cPool[256], int& s
 			if (item == "//")
 				break;
 
-			if (itemCount == 1) // item 1: opcode
+			if (itemCount == 1) 
 			{
 				// add to array
 				cPool[size].constantName = item;
 			}
-			else if (itemCount >= 2) // item 2: possible operand
+			else if (itemCount >= 2) 
 			{
 				// add to array
 				//item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string

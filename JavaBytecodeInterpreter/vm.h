@@ -2,6 +2,8 @@
 
 #define STACK_MAX 256
 
+#include "MainForm.h"
+
 #include <iostream>
 #include <ctype.h>
 #include <vector>
@@ -15,6 +17,8 @@
 #include <map>
 #include <fstream>
 #include <sstream>
+
+
 
 // stack based interpreter
 struct
@@ -44,6 +48,8 @@ struct
 	bool usingVar1 = false;
 	bool usingVar2 = false;
 	bool usingVar3 = false;
+	// Console output
+	std::string currentOutput = "";
 } vm;
 
 // structure for every line in the program
@@ -205,6 +211,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		branching = false;
 		methodCalling = false;
 		counter = program[vm.i].instruction;
+		vm.currentOutput = "";
 		std::cout << "Counter: " << vm.i << std::endl;
 		switch (instruction)
 		{
@@ -561,9 +568,9 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// check for PrintStream, then output to console
 			utf8 = cPool[value2].constantItem;
 			if (utf8 == "print")
-				std::cout << cPool[value1].constantItem;
+				vm.currentOutput = cPool[value1].constantItem;
 			else if (utf8 == "println")
-				std::cout << cPool[value1].constantItem << std::endl;
+				vm.currentOutput = cPool[value1].constantItem + "\n";
 			break;
 		case imul:
 			value1 = vmStackPop();
@@ -766,9 +773,9 @@ opcode stringToOpcode(const std::string& str)
 		return NA;
 }
 
-std::string opcodeToString(opcode& str)
+std::string opcodeToString(uint64_t str)
 {
-	std::map<opcode, std::string> mp =
+	std::map<uint64_t, std::string> mp =
 	{
 		{aload, "aload"},
 		{aload_0, "aload_0"},
@@ -825,4 +832,6 @@ std::string opcodeToString(opcode& str)
 	else
 		return "NA";
 }
+
+
 
