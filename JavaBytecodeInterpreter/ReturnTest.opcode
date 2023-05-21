@@ -1,0 +1,75 @@
+Classfile /C:/Users/ADMIN/Desktop/opcode_tests/ReturnTest.class
+  Last modified 21-May-2023; size 360 bytes
+  MD5 checksum c61f63e8d9903ebb5d57bda3485bdca0
+  Compiled from "ReturnTest.java"
+class ReturnTest
+  minor version: 0
+  major version: 63
+  flags: ACC_SUPER
+Constant pool:
+   #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V
+   #2 = Class              #4             // java/lang/Object
+   #3 = NameAndType        #5:#6          // "<init>":()V
+   #4 = Utf8               java/lang/Object
+   #5 = Utf8               <init>
+   #6 = Utf8               ()V
+   #7 = Methodref          #8.#9          // ReturnTest.add:(II)I
+   #8 = Class              #10            // ReturnTest
+   #9 = NameAndType        #11:#12        // add:(II)I
+  #10 = Utf8               ReturnTest
+  #11 = Utf8               add
+  #12 = Utf8               (II)I
+  #13 = Utf8               Code
+  #14 = Utf8               LineNumberTable
+  #15 = Utf8               main
+  #16 = Utf8               ([Ljava/lang/String;)V
+  #17 = Utf8               SourceFile
+  #18 = Utf8               ReturnTest.java
+{
+  ReturnTest();
+    descriptor: ()V
+    flags:
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 1: 0
+
+  public static int add(int, int);
+    descriptor: (II)I
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=3, args_size=2
+         0: iload_0
+         1: iload_1
+         2: iadd
+         3: istore_2
+         4: iload_2
+         5: ireturn
+      LineNumberTable:
+        line 7: 0
+        line 8: 4
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=4, args_size=1
+         0: iconst_5
+         1: istore_1
+         2: bipush        15
+         4: istore_2
+         5: iload_1
+         6: iload_2
+         7: invokestatic  #7                  // Method add:(II)I
+        10: istore_3
+        11: return
+      LineNumberTable:
+        line 13: 0
+        line 14: 2
+        line 16: 5
+        line 17: 11
+}
+SourceFile: "ReturnTest.java"

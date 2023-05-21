@@ -112,6 +112,7 @@ typedef enum
 	ldc,
 	GOTO,
 	OP_DONE, // stop execution
+	ireturn,
 	NA = 257 // default - opcode does not exist
 } opcode;
 
@@ -664,7 +665,23 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 				std::cout << " TO " << vm.i << std::endl;
 			}
 			//std::cout << program[vm.i].methodName << std::endl;
-			break;			
+			break;
+		case ireturn:
+			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
+			{
+				vm.finishedExecution = true;
+				return SUCCESS;
+			}
+			else
+			{
+				std::cout << "JUMPING FROM " << vm.i;
+				value1 = methodStackPop() + 1;
+				vm.i = value1;
+				methodCalling = true;
+				std::cout << " TO " << vm.i << std::endl;
+			}
+			//std::cout << program[vm.i].methodName << std::endl;
+			break;
 		case NA:
 			vm.finishedExecution = true;
 			return ERROR_UNKNOWN_OPCODE;
@@ -741,6 +758,7 @@ opcode stringToOpcode(const std::string& str)
 		{"ldc", ldc},
 		{"goto", GOTO},
 		{"return", OP_DONE},
+		{"ireturn", ireturn},
 	};
 	if (mp.count(str) > 0) // if value exists in map
 		return mp[str];

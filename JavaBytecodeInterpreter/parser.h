@@ -225,7 +225,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 				{
 					isConstantPool = true;
 				}
-				else if (item == "return")
+				else if (item == "return" || item == "ireturn")
 				{
 					isCode = false;
 				}
