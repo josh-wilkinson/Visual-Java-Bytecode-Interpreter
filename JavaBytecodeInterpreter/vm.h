@@ -766,5 +766,63 @@ opcode stringToOpcode(const std::string& str)
 		return NA;
 }
 
-
+std::string opcodeToString(opcode& str)
+{
+	std::map<opcode, std::string> mp =
+	{
+		{aload, "aload"},
+		{aload_0, "aload_0"},
+		{aload_1, "aload_1"},
+		{aload_2, "aload_2"},
+		{aload_3, "aload_3"},
+		{bipush, "bipush"},
+		{getstatic, "getstatic"},
+		{iadd, "iadd"},
+		{iconst_0, "iconst_0"},
+		{iconst_1, "iconst_1"},
+		{iconst_2, "iconst_2"},
+		{iconst_3, "iconst_3"},
+		{iconst_4, "iconst_4"},
+		{iconst_5, "iconst_5"},
+		{idiv, "idiv"},
+		{if_icmpne, "if_icmpne"},
+		{if_icmpeq, "if_icmpeq"},
+		{if_icmpgt, "if_icmpgt"},
+		{if_icmpge, "if_icmpge"},
+		{if_icmplt, "if_icmplt"},
+		{if_icmple, "if_icmple"},
+		{ifeq, "ifeq"},
+		{ifne, "ifne"},
+		{ifgt, "ifgt"},
+		{ifge, "ifge"},
+		{iflt, "iflt"},
+		{ifle, "ifle"},
+		{iinc, "iinc"},
+		{iload, "iload"},
+		{iload_0, "iload_0"},
+		{iload_1, "iload_1"},
+		{iload_2, "iload_2"},
+		{iload_3, "iload_3"},
+		{invokespecial, "invokespecial"},
+		{invokestatic, "invokestatic"},
+		{invokevirtual, "invokevirtual"},
+		{imul, "imul"},
+		{isub, "isub"},
+		{ishl, "ishl"},
+		{ishr, "ishr"},
+		{istore, "istore"},
+		{istore_0, "istore_0"},
+		{istore_1, "istore_1"},
+		{istore_2, "istore_2"},
+		{istore_3, "istore_3"},
+		{ldc, "ldc"},
+		{GOTO, "goto"},
+		{OP_DONE, "return"},
+		{ireturn, "ireturn"},
+	};
+	if (mp.count(str) > 0) // if value exists in map
+		return mp[str];
+	else
+		return "NA";
+}
 
