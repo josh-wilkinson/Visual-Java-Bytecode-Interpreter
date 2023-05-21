@@ -2,8 +2,6 @@
 
 #define STACK_MAX 256
 
-#include "MainForm.h"
-
 #include <iostream>
 #include <ctype.h>
 #include <vector>
