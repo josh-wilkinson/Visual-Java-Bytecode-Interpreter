@@ -24,10 +24,15 @@ struct
 	bool steppingThroughCode = false;
 	bool finishedExecution = false;
 	int elementsInStack = 0;
+	int elementsInMethodStack = 0;
 
 	// Fixed-size stack
 	uint64_t stack[STACK_MAX];
 	uint64_t* stack_top;
+
+	// Fixed-size stack
+	uint64_t methodStack[STACK_MAX];
+	uint64_t* method_stack_top;
 
 	// Registers
 	uint64_t var0;
@@ -44,7 +49,16 @@ struct
 // structure for every line in the program
 struct codeLine
 {
-	uint8_t opcodeNumber, instruction, operand1, operand2, operand3;
+	uint64_t opcodeNumber, instruction, operand1, operand2, operand3;
+	// String (method name)
+	std::string methodName;
+};
+
+struct constantPoolLine
+{
+	uint64_t constantNumber;
+	std::string constantName;
+	std::string constantItem;
 };
 
 // opcodes enumerator
@@ -56,6 +70,7 @@ typedef enum
 	aload_2,
 	aload_3,
 	bipush,
+	getstatic,
 	iadd,
 	iconst_0,
 	iconst_1,
@@ -94,8 +109,10 @@ typedef enum
 	istore_1,
 	istore_2,
 	istore_3,
+	ldc,
 	GOTO,
 	OP_DONE, // stop execution
+	ireturn,
 	NA = 257 // default - opcode does not exist
 } opcode;
 
@@ -112,8 +129,10 @@ void vmReset()
 	std::cout << "Reset VM state" << std::endl;
 	vm = decltype(vm){ NULL };
 	vm.stack_top = vm.stack;
+	vm.method_stack_top = vm.methodStack;
 }
 
+// virtual machine stack functions
 void vmStackPush(uint64_t value)
 {
 	vm.elementsInStack++;
@@ -126,6 +145,21 @@ uint64_t vmStackPop(void)
 	vm.elementsInStack--;
 	vm.stack_top--; // previous space in memory
 	return *vm.stack_top;
+}
+
+// stack functions for method locations in the program array
+void methodStackPush(uint64_t value)
+{
+	vm.elementsInMethodStack++;
+	*vm.method_stack_top = value;
+	vm.method_stack_top++; // next space in memory
+}
+
+uint64_t methodStackPop(void)
+{
+	vm.elementsInMethodStack--;
+	vm.method_stack_top--; // previous space in memory
+	return *vm.method_stack_top;
 }
 
 void jumpToOpcodeNumber(codeLine program[], int index, bool branching, int size) // same as GOTO
@@ -149,7 +183,7 @@ void jumpToOpcodeNumber(codeLine program[], int index, bool branching, int size)
 }
 
 // interpreter code
-interpretResult vmInterpret(codeLine program[256], int size) // program goes through code here
+interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {
 	if (!vm.steppingThroughCode)
 	{
@@ -157,19 +191,21 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 	}
 
 	bool branching = false;
-
+	bool methodCalling = false;
 	int beginningOfMethod;
 	int counter = 0;
 	uint64_t value1;
 	uint64_t value2;
+	std::string utf8;
 
 	std::cout << "Interpreter started" << std::endl;
 	do
 	{
 		uint8_t instruction = program[vm.i].instruction;
 		branching = false;
-		counter = program[vm.i].opcodeNumber;
-		std::cout << "Counter: " << counter << std::endl;
+		methodCalling = false;
+		counter = program[vm.i].instruction;
+		std::cout << "Counter: " << vm.i << std::endl;
 		switch (instruction)
 		{
 			// All of the opcode instructions are implemented here!
@@ -185,6 +221,8 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			break;
 		case bipush:
 			vmStackPush(program[vm.i].operand1);
+			break;
+		case getstatic:
 			break;
 		case iadd:
 			value1 = vmStackPop();
@@ -222,7 +260,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -241,7 +279,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -260,7 +298,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -279,7 +317,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -299,7 +337,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 				uint64_t lineNum = program[vm.i].operand1;
 
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -318,7 +356,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -337,7 +375,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -355,7 +393,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -373,7 +411,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -391,7 +429,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -409,7 +447,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -427,7 +465,7 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			{
 				uint64_t lineNum = program[vm.i].operand1;
 				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < size; j++)
+				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 				{
 					if (program[j].opcodeNumber == lineNum)
 					{
@@ -484,10 +522,48 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			vmStackPush(value1);
 			break;
 		case invokespecial:
+			// Find the main method in the code array and jump to that
+			//methodCalling = true;			
+			utf8 = "([Ljava/lang/String;)V";
+			for (int j = 0; j < sizeOfCodeArray; j++)
+			{
+				if (program[j].methodName == utf8)
+				{
+					vm.i = j - 1;
+					std::cout << "FOUND METHOD " << utf8 << std::endl;
+					break;
+				}
+			}
 			break;
 		case invokestatic:
+			// Find the method in the code array and jump to that
+			methodCalling = true;
+			value1 = program[vm.i].operand1;
+			value2 = vm.i;
+			// getting method name called, e.g. java/lang/Object."<init>":()V
+			utf8 = cPool[value1 + 4].constantItem;
+			for (int j = 0; j < sizeOfCodeArray; j++)
+			{
+				if (program[j].methodName == utf8)
+				{
+					methodStackPush(value2);
+					vm.i = j;
+					std::cout << "FOUND METHOD " << utf8 << std::endl;
+					break;
+				}
+			}
+			break;
 			break;
 		case invokevirtual:
+			value1 = vmStackPop();
+			value2 = program[vm.i].operand1 + 3;
+			// invoke virtual method
+			// check for PrintStream, then output to console
+			utf8 = cPool[value2].constantItem;
+			if (utf8 == "print")
+				std::cout << cPool[value1].constantItem;
+			else if (utf8 == "println")
+				std::cout << cPool[value1].constantItem << std::endl;
 			break;
 		case imul:
 			value1 = vmStackPop();
@@ -556,9 +632,13 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 			vm.var3 = value1;
 			vm.usingVar3 = true;
 			break;
+		case ldc:
+			value1 = program[vm.i].operand1;
+			vmStackPush(value1);
+			break;
 		case GOTO:
 			beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-			for (int j = beginningOfMethod; j < size; j++)
+			for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].opcodeNumber == program[vm.i].operand1)
 				{
@@ -570,19 +650,49 @@ interpretResult vmInterpret(codeLine program[256], int size) // program goes thr
 					break;
 			}
 			break;
-
 		case OP_DONE:
-			vm.finishedExecution = true;
-			return SUCCESS;
+			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
+			{
+				vm.finishedExecution = true;
+				return SUCCESS;
+			}
+			else
+			{
+				std::cout << "JUMPING FROM " << vm.i;
+				value1 = methodStackPop() + 1;
+				vm.i = value1;
+				methodCalling = true;
+				std::cout << " TO " << vm.i << std::endl;
+			}
+			//std::cout << program[vm.i].methodName << std::endl;
+			break;
+		case ireturn:
+			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
+			{
+				vm.finishedExecution = true;
+				return SUCCESS;
+			}
+			else
+			{
+				std::cout << "JUMPING FROM " << vm.i;
+				value1 = methodStackPop() + 1;
+				vm.i = value1;
+				methodCalling = true;
+				std::cout << " TO " << vm.i << std::endl;
+			}
+			//std::cout << program[vm.i].methodName << std::endl;
+			break;
 		case NA:
 			vm.finishedExecution = true;
 			return ERROR_UNKNOWN_OPCODE;
+			break;
 		default:
 			vm.finishedExecution = true;
+			std::cout << "Unknown opcode!!" << std::endl;
 			return ERROR_UNKNOWN_OPCODE;
 			break;
 		}
-		if (!branching)
+		if (!branching && !methodCalling)
 			vm.i++;
 	} while (!vm.steppingThroughCode);
 
@@ -606,6 +716,7 @@ opcode stringToOpcode(const std::string& str)
 		{"aload_2", aload_2},
 		{"aload_3", aload_3},
 		{"bipush", bipush},
+		{"getstatic", getstatic},
 		{"iadd", iadd},
 		{"iconst_0", iconst_0},
 		{"iconst_1", iconst_1},
@@ -644,13 +755,75 @@ opcode stringToOpcode(const std::string& str)
 		{"istore_1", istore_1},
 		{"istore_2", istore_2},
 		{"istore_3", istore_3},
+		{"ldc", ldc},
 		{"goto", GOTO},
 		{"return", OP_DONE},
+		{"ireturn", ireturn},
 	};
 	if (mp.count(str) > 0) // if value exists in map
 		return mp[str];
 	else
 		return NA;
+}
+
+std::string opcodeToString(uint64_t str)
+{
+	std::map<uint64_t, std::string> mp =
+	{
+		{aload, "aload"},
+		{aload_0, "aload_0"},
+		{aload_1, "aload_1"},
+		{aload_2, "aload_2"},
+		{aload_3, "aload_3"},
+		{bipush, "bipush"},
+		{getstatic, "getstatic"},
+		{iadd, "iadd"},
+		{iconst_0, "iconst_0"},
+		{iconst_1, "iconst_1"},
+		{iconst_2, "iconst_2"},
+		{iconst_3, "iconst_3"},
+		{iconst_4, "iconst_4"},
+		{iconst_5, "iconst_5"},
+		{idiv, "idiv"},
+		{if_icmpne, "if_icmpne"},
+		{if_icmpeq, "if_icmpeq"},
+		{if_icmpgt, "if_icmpgt"},
+		{if_icmpge, "if_icmpge"},
+		{if_icmplt, "if_icmplt"},
+		{if_icmple, "if_icmple"},
+		{ifeq, "ifeq"},
+		{ifne, "ifne"},
+		{ifgt, "ifgt"},
+		{ifge, "ifge"},
+		{iflt, "iflt"},
+		{ifle, "ifle"},
+		{iinc, "iinc"},
+		{iload, "iload"},
+		{iload_0, "iload_0"},
+		{iload_1, "iload_1"},
+		{iload_2, "iload_2"},
+		{iload_3, "iload_3"},
+		{invokespecial, "invokespecial"},
+		{invokestatic, "invokestatic"},
+		{invokevirtual, "invokevirtual"},
+		{imul, "imul"},
+		{isub, "isub"},
+		{ishl, "ishl"},
+		{ishr, "ishr"},
+		{istore, "istore"},
+		{istore_0, "istore_0"},
+		{istore_1, "istore_1"},
+		{istore_2, "istore_2"},
+		{istore_3, "istore_3"},
+		{ldc, "ldc"},
+		{GOTO, "goto"},
+		{OP_DONE, "return"},
+		{ireturn, "ireturn"},
+	};
+	if (mp.count(str) > 0) // if value exists in map
+		return mp[str];
+	else
+		return "NA";
 }
 
 

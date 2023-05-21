@@ -1,4 +1,22 @@
 ﻿  MainForm.cpp
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(170,24): warning C4244: 'initializing': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(204,23): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint8_t', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(207,26): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(262,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(281,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(300,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(319,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(339,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(358,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(377,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(395,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(413,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(431,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(449,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(467,52): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(640,51): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(663,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(679,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
 C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\MainForm.cpp(7,1): warning C4829: Possibly incorrect parameters to function main. Consider 'int main(Platform::Array<Platform::String^>^ argv)'
   MainForm.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
   Visual Interpreter.vcxproj -> C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\x64\Debug\Visual Interpreter.exe

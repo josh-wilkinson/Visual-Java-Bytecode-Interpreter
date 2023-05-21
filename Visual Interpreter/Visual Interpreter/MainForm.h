@@ -22,7 +22,9 @@ namespace VisualInterpreter {
 	using namespace System::IO;
 
 	codeLine code[256]; // array of lines of code
+	constantPoolLine cPool[256];
 	int sizeOfCodeArray = 0; // number of elements in code array
+	int sizeOfConstantPoolArray = 0;
 	std::string fn;
 	/// <summary>
 	/// Summary for MainForm
@@ -89,6 +91,8 @@ namespace VisualInterpreter {
 
 	private: System::Windows::Forms::FlowLayoutPanel^ flowLayoutPanel8;
 	private: System::Windows::Forms::RichTextBox^ javaCodeTextBox;
+	private: System::Windows::Forms::ToolStripMenuItem^ viewToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^ javaCodeToolStripMenuItem;
 
 
 
@@ -154,6 +158,8 @@ namespace VisualInterpreter {
 			this->javaCodeLabel = (gcnew System::Windows::Forms::Label());
 			this->flowLayoutPanel8 = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->javaCodeTextBox = (gcnew System::Windows::Forms::RichTextBox());
+			this->viewToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->javaCodeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip1->SuspendLayout();
 			this->flowLayoutPanel1->SuspendLayout();
 			this->tableLayoutPanel1->SuspendLayout();
@@ -171,9 +177,9 @@ namespace VisualInterpreter {
 			this->menuStrip1->BackColor = System::Drawing::SystemColors::ActiveBorder;
 			this->menuStrip1->GripMargin = System::Windows::Forms::Padding(2, 2, 0, 2);
 			this->menuStrip1->ImageScalingSize = System::Drawing::Size(24, 24);
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
 				this->fileToolStripMenuItem,
-					this->optionsToolStripMenuItem, this->helpToolStripMenuItem
+					this->optionsToolStripMenuItem, this->helpToolStripMenuItem, this->viewToolStripMenuItem
 			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
@@ -516,6 +522,19 @@ namespace VisualInterpreter {
 			this->javaCodeTextBox->TabIndex = 0;
 			this->javaCodeTextBox->Text = L"";
 			// 
+			// viewToolStripMenuItem
+			// 
+			this->viewToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->javaCodeToolStripMenuItem });
+			this->viewToolStripMenuItem->Name = L"viewToolStripMenuItem";
+			this->viewToolStripMenuItem->Size = System::Drawing::Size(65, 29);
+			this->viewToolStripMenuItem->Text = L"View";
+			// 
+			// javaCodeToolStripMenuItem
+			// 
+			this->javaCodeToolStripMenuItem->Name = L"javaCodeToolStripMenuItem";
+			this->javaCodeToolStripMenuItem->Size = System::Drawing::Size(270, 34);
+			this->javaCodeToolStripMenuItem->Text = L"Java Code";
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
@@ -567,7 +586,8 @@ namespace VisualInterpreter {
 				String^ strfilename = openFileDialog1->InitialDirectory + openFileDialog1->FileName;								
 				String^ JavaFile = File::ReadAllText(strfilename); // text for the java program text box
 				String^ InitialDirectory = openFileDialog1->InitialDirectory;
-				String^ JavaFileName = openFileDialog1->FileName;				
+				String^ JavaFileName = openFileDialog1->FileName;		
+				std::string OpcodeDisplayFileName;
 
 				//fn = msclr::interop::marshal_as<std::string>(strfilename); // converts System::String to std::string				
 				std::string javaFileName = msclr::interop::marshal_as<std::string>(JavaFileName);
@@ -577,9 +597,10 @@ namespace VisualInterpreter {
 
 				eraseSubString(javaFileName, ".java"); //remove .java from string
 				//javaFileName.erase(remove(javaFileName.begin(), javaFileName.end(), ".java"), javaFileName.end()); //remove .java from string
-				fn = initialDirectory + javaFileName + ".txt";
+				OpcodeDisplayFileName = initialDirectory + javaFileName + ".txt";
+				fn = initialDirectory + javaFileName + ".opcode";
 				std::string baseFilename = fn.substr(fn.find_last_of("/\\") + 1);
-				eraseSubString(baseFilename, ".txt");
+				eraseSubString(baseFilename, ".opcode");
 				// getting directory path to the file
 				std::string directory;
 				const size_t last_slash_idx = fn.rfind('\\');
@@ -588,10 +609,13 @@ namespace VisualInterpreter {
 					directory = fn.substr(0, last_slash_idx);
 				}
 				std::string temp1 = "cd/ & cd ";
-				std::string javapFileCommand = temp1 + directory + " & javap -c " + baseFilename + " > " + baseFilename + ".txt";
+				std::string javapFileCommand = temp1 + directory + " & javap -v " + baseFilename + " > " + baseFilename + ".opcode";
+				system(javapFileCommand.c_str());
+
+				javapFileCommand = temp1 + directory + " & javap -c " + baseFilename + " > " + baseFilename + ".txt";
 				system(javapFileCommand.c_str());
 				
-				String^ OpcodeFilePath = gcnew String(fn.c_str());				
+				String^ OpcodeFilePath = gcnew String(OpcodeDisplayFileName.c_str());				
 				// Trying to open file... fn
 				String^ OpcodeFile = File::ReadAllText(OpcodeFilePath);
 				this->javaCodeTextBox->Text = JavaFile; // add code to textbox		
@@ -618,8 +642,8 @@ namespace VisualInterpreter {
 
 	private: System::Void runButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		reset();
-		readInstructions(code, fn, sizeOfCodeArray);
-		interpretResult result = vmInterpret(code, sizeOfCodeArray);
+		readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
+		interpretResult result = vmInterpret(code, cPool, sizeOfCodeArray, sizeOfConstantPoolArray);
 		update();
 		vm.finishedExecution = true;
 		stepForwardButton->Enabled = false;
@@ -629,21 +653,59 @@ namespace VisualInterpreter {
 		if (!vm.steppingThroughCode)
 		{
 			reset();
-			readInstructions(code, fn, sizeOfCodeArray);
+			readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
 			vm.steppingThroughCode = true;
 		}
-		int textboxIndex = 180; // char index, e.g. getting 't' from "data" would be number 2.
-		String^ item = code[vm.i].opcodeNumber + ":";
+		
+		// we need to get the proper textboxIndex so that we actually highlight the proper opcode instead of the first one it comes across		
+		int textboxIndex = 0; // char index, e.g. getting 't' from "data" would be number 2.
+		int endIndex = 0;
+
+		for (int i = 0; i < sizeOfCodeArray; i++)
+		{
+			if (code[i].methodName == code[vm.i].methodName)
+			{
+				textboxIndex = (i * 17) + 66;
+				break;
+			}
+		}
+
+		for (int i = textboxIndex; i < sizeOfCodeArray; i++)
+		{
+			if (code[i].methodName != code[vm.i].methodName)
+			{
+				//endIndex = (i * 17) + 66;
+				break;
+			}
+		}
+
+		//textboxIndex = opcodeTextBox->TextLength / textboxIndex;
+
+		std::string textBoxText;
+		String^ opcodeInstruction = gcnew String(opcodeToString(code[vm.i].instruction).c_str());
+		String^ item = code[vm.i].opcodeNumber + ": " + opcodeInstruction;
 		String^ temp = opcodeTextBox->Text;
+
+			
+
+		textBoxText = msclr::interop::marshal_as<std::string>(opcodeTextBox->Text);
+		textBoxText.erase(remove(textBoxText.begin(), textBoxText.end(), ' '), textBoxText.end()); //remove blank spaces from string
+
+
 		opcodeTextBox->Text = "";
-		opcodeTextBox->Text = temp;		
+		opcodeTextBox->Text = temp;
+
 		// search for the text - this will need to be reworked when there are multiple methods
 		opcodeTextBox->Find(item, textboxIndex, opcodeTextBox->TextLength, RichTextBoxFinds::None);
+		
+		
+		
 		// selection colour
-		opcodeTextBox->SelectionBackColor = Color::Red;		
+		opcodeTextBox->SelectionBackColor = Color::Red;	
+
 		if (!vm.finishedExecution)
 		{			
-			interpretResult result = vmInterpret(code, sizeOfCodeArray);
+			interpretResult result = vmInterpret(code, cPool, sizeOfCodeArray, sizeOfConstantPoolArray);
 			update();
 		}
 		else
