@@ -16,8 +16,6 @@
 #include <fstream>
 #include <sstream>
 
-
-
 // stack based interpreter
 struct
 {
@@ -56,6 +54,7 @@ struct codeLine
 	uint64_t opcodeNumber, instruction, operand1, operand2, operand3;
 	// String (method name)
 	std::string methodName;
+	bool breakPoint = false;
 };
 
 struct constantPoolLine
