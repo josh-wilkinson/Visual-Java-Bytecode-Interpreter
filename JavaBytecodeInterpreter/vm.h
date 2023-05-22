@@ -52,9 +52,8 @@ struct
 struct codeLine
 {
 	uint64_t opcodeNumber, instruction, operand1, operand2, operand3;
-	// String (method name)
-	std::string methodName;
-	bool breakPoint = false;
+	std::string methodName; // method this line of code belongs to...
+	bool breakPoint = false; // does this line have a break point?
 };
 
 struct constantPoolLine
@@ -293,225 +292,92 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case if_icmpne:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " != " << value1 << std::endl;
 			if (value2 != value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmpeq:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " == " << value1 << std::endl;
 			if (value2 == value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmpgt:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " > " << value1 << std::endl;
 			if (value2 > value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmplt:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " < " << value1 << std::endl;
 			if (value2 < value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmple:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " <= " << value1 << std::endl;
 			if (value2 <= value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case if_icmpge:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " >= " << value1 << std::endl;
 			if (value2 >= value1)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 
 			break;
 		case ifeq:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is 0 " << std::endl;
 			if (value1 == 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case ifne:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is not 0 " << std::endl;
 			if (value1 != 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case ifgt:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is > 0 " << std::endl;
 			if (value1 > 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case ifge:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is >= 0 " << std::endl;
 			if (value1 >= 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case iflt:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is < 0 " << std::endl;
 			if (value1 < 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case ifle:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is <= 0 " << std::endl;
 			if (value1 <= 0)
 			{
-				uint64_t lineNum = program[vm.i].operand1;
-				beginningOfMethod = program[vm.i].opcodeNumber - program[vm.i].opcodeNumber;
-				for (int j = beginningOfMethod; j < sizeOfCodeArray; j++)
-				{
-					if (program[j].opcodeNumber == lineNum)
-					{
-						vm.i = j;
-						branching = true;
-						break;
-					}
-				}
+				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			}
 			break;
 		case iinc:
@@ -539,9 +405,28 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 				break;
 			}
 			break;
-		case iload:
+		case iload: // loads a register variable into the stack
 			// format: opcode operand
 			// different way to iload_0 to iload_3
+			switch (program[vm.i].operand1)
+			{
+			case 0:
+				value1 = vm.var0;
+				vmStackPush(value1);
+				break;
+			case 1:
+				value1 = vm.var1;
+				vmStackPush(value1);
+				break;
+			case 2:
+				value1 = vm.var2;
+				vmStackPush(value1);
+				break;
+			case 3:
+				value1 = vm.var3;
+				vmStackPush(value1);
+				break;
+			}
 			break;
 		case iload_0:
 			value1 = vm.var0;
