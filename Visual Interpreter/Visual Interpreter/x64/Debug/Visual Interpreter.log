@@ -1,9 +1,8 @@
 ﻿  MainForm.cpp
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(173,24): warning C4244: 'initializing': conversion from 'uint64_t' to 'int', possible loss of data
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(241,23): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint8_t', possible loss of data
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(244,26): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(569,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(585,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(221,23): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint8_t', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(224,26): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(549,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(565,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
 C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\MainForm.cpp(7,1): warning C4829: Possibly incorrect parameters to function main. Consider 'int main(Platform::Array<Platform::String^>^ argv)'
   JavaCode.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
   Visual Interpreter.vcxproj -> C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\x64\Debug\Visual Interpreter.exe

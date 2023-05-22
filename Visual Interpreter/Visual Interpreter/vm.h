@@ -165,26 +165,6 @@ uint64_t methodStackPop(void)
 	return *vm.method_stack_top;
 }
 
-void jumpToOpcodeNumber(codeLine program[], int index, bool branching, int size) // same as GOTO
-{
-	uint64_t lineNum = program[index].operand1;
-
-	// beginningOfMethod - say if we have multiple methods in the program array, then to get to the start of the method we need to subract the opcode number (e.g. 7) into the index.
-	int beginningOfMethod = index - program[index].opcodeNumber;
-
-	if (beginningOfMethod < 0)
-		beginningOfMethod = 0;
-	for (int j = beginningOfMethod; j < size; j++)
-	{
-		if (program[j].opcodeNumber == lineNum)
-		{
-			vm.i = j;
-			branching = true;
-			break;
-		}
-	}
-}
-
 void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, int endOfMethod, bool& branching)
 {
 	for (int i = 0; i < sizeOfCodeArray; i++)
