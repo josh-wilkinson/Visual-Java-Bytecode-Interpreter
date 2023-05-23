@@ -247,6 +247,16 @@ void parseConstantItemPositions(std::string utf8, uint64_t& value1, uint64_t& va
 	}
 }
 
+void setBreakPoint(codeLine program[256], int pos)
+{
+	program[pos].breakPoint = true;
+}
+
+void removeBreakPoint(codeLine program[256], int pos)
+{
+	program[pos].breakPoint = false;
+}
+
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {

@@ -41,7 +41,8 @@ int main(int argc, char* argv[])
 		int num;
 		std::cin >> num;
 
-		code[num].breakPoint = true;
+		setBreakPoint(code, num);
+		//removeBreakPoint(code, num);
 
 		interpretResult result = vmInterpret(code, constantPool, sizeOfCodeArray, sizeOfCPoolArray);
 
@@ -50,12 +51,14 @@ int main(int argc, char* argv[])
 		std::cout << "var 2: " << vm.var2 << std::endl;
 		std::cout << "var 3: " << vm.var3 << std::endl;
 
-		assert(result == SUCCESS);
+		//assert(result == SUCCESS);
 
 		if (result == SUCCESS)
 			std::cout << "Interpreter ran successfully!";
 		else if (result == ERROR_UNKNOWN_OPCODE)
 			std::cout << "Error: unknown opcode.";
+		else if (result == BREAKPOINT)
+			std::cout << "Breakpoint detected for pos: " << vm.i << std::endl;
 	}
 	return 0;
 }
