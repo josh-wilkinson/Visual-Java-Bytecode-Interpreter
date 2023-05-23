@@ -478,7 +478,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case invokespecial:
 			// Find the main method in the code array and jump to that
 			//methodCalling = true;			
-			utf8 = "([Ljava/lang/String;)V";
+			utf8 = "main([Ljava/lang/String;)V";
 			for (int j = 0; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].methodName == utf8)
@@ -507,6 +507,8 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// value 3 is the index of the name
 			// value 4 is the index of the type
 
+			utf8 = cPool[value3 - 1].constantItem + cPool[value4 - 1].constantItem; // method name and descriptor
+
 			for (int j = 0; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].methodName == utf8)
@@ -515,11 +517,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 					vm.i = j;
 					std::cout << "FOUND METHOD " << utf8 << std::endl;
 					break;
-				}
-				else
-				{
-					std::cout << "METHOD NOT FOUND" << std::endl;
-					return SUCCESS;
 				}
 			}
 			for (int j = 0; j <= vm.elementsInStack; j++)
@@ -612,7 +609,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			break;
 		case OP_DONE:
-			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
+			if (program[vm.i].methodName == "main([Ljava/lang/String;)V")
 			{
 				vm.finishedExecution = true;
 				return SUCCESS;
@@ -628,7 +625,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			//std::cout << program[vm.i].methodName << std::endl;
 			break;
 		case ireturn:
-			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
+			if (program[vm.i].methodName == "main([Ljava/lang/String;)V")
 			{
 				vm.finishedExecution = true;
 				return SUCCESS;
@@ -787,5 +784,14 @@ std::string opcodeToString(uint64_t str)
 		return "NA";
 }
 
-
+void eraseSubStr(std::string& mainStr, const std::string& toErase)
+{
+	// Search for the substring in string
+	size_t pos = mainStr.find(toErase);
+	if (pos != std::string::npos)
+	{
+		// If found then erase it from string
+		mainStr.erase(pos, toErase.length());
+	}
+}
 
