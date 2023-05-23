@@ -104,6 +104,15 @@ namespace VisualInterpreter {
 	private: System::Windows::Forms::ToolStripMenuItem^ javaCodeToolStripMenuItem;
 	private: System::Windows::Forms::FlowLayoutPanel^ flowLayoutPanel9;
 	private: System::Windows::Forms::RichTextBox^ outputTextBox;
+	private: System::Windows::Forms::Button^ stepFiveButton;
+	private: System::Windows::Forms::Label^ breakPointLabel;
+	private: System::Windows::Forms::TextBox^ breakPointTextBox;
+	private: System::Windows::Forms::FlowLayoutPanel^ flowLayoutPanel10;
+	private: System::Windows::Forms::Button^ breakPointButton;
+
+
+
+
 
 
 
@@ -152,6 +161,7 @@ namespace VisualInterpreter {
 			this->flowLayoutPanel1 = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->runButton = (gcnew System::Windows::Forms::Button());
 			this->stepForwardButton = (gcnew System::Windows::Forms::Button());
+			this->stepFiveButton = (gcnew System::Windows::Forms::Button());
 			this->resetButton = (gcnew System::Windows::Forms::Button());
 			this->tableLayoutPanel1 = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->opcodeTextBox = (gcnew System::Windows::Forms::RichTextBox());
@@ -178,6 +188,10 @@ namespace VisualInterpreter {
 			this->javaCodeTextBox = (gcnew System::Windows::Forms::RichTextBox());
 			this->flowLayoutPanel9 = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->outputTextBox = (gcnew System::Windows::Forms::RichTextBox());
+			this->breakPointLabel = (gcnew System::Windows::Forms::Label());
+			this->breakPointTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->flowLayoutPanel10 = (gcnew System::Windows::Forms::FlowLayoutPanel());
+			this->breakPointButton = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1->SuspendLayout();
 			this->flowLayoutPanel1->SuspendLayout();
 			this->tableLayoutPanel1->SuspendLayout();
@@ -189,6 +203,7 @@ namespace VisualInterpreter {
 			this->flowLayoutPanel7->SuspendLayout();
 			this->flowLayoutPanel8->SuspendLayout();
 			this->flowLayoutPanel9->SuspendLayout();
+			this->flowLayoutPanel10->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// menuStrip1
@@ -268,10 +283,11 @@ namespace VisualInterpreter {
 			// 
 			this->flowLayoutPanel1->Controls->Add(this->runButton);
 			this->flowLayoutPanel1->Controls->Add(this->stepForwardButton);
+			this->flowLayoutPanel1->Controls->Add(this->stepFiveButton);
 			this->flowLayoutPanel1->Controls->Add(this->resetButton);
-			this->flowLayoutPanel1->Location = System::Drawing::Point(12, 36);
+			this->flowLayoutPanel1->Location = System::Drawing::Point(12, 39);
 			this->flowLayoutPanel1->Name = L"flowLayoutPanel1";
-			this->flowLayoutPanel1->Size = System::Drawing::Size(1874, 50);
+			this->flowLayoutPanel1->Size = System::Drawing::Size(832, 47);
 			this->flowLayoutPanel1->TabIndex = 1;
 			// 
 			// runButton
@@ -296,10 +312,21 @@ namespace VisualInterpreter {
 			this->stepForwardButton->UseVisualStyleBackColor = true;
 			this->stepForwardButton->Click += gcnew System::EventHandler(this, &MainForm::stepForwardButton_Click);
 			// 
+			// stepFiveButton
+			// 
+			this->stepFiveButton->Enabled = false;
+			this->stepFiveButton->Location = System::Drawing::Point(175, 3);
+			this->stepFiveButton->Name = L"stepFiveButton";
+			this->stepFiveButton->Size = System::Drawing::Size(80, 40);
+			this->stepFiveButton->TabIndex = 3;
+			this->stepFiveButton->Text = L"Step 5";
+			this->stepFiveButton->UseVisualStyleBackColor = true;
+			this->stepFiveButton->Click += gcnew System::EventHandler(this, &MainForm::stepFiveButton_Click);
+			// 
 			// resetButton
 			// 
 			this->resetButton->Enabled = false;
-			this->resetButton->Location = System::Drawing::Point(175, 3);
+			this->resetButton->Location = System::Drawing::Point(261, 3);
 			this->resetButton->Name = L"resetButton";
 			this->resetButton->Size = System::Drawing::Size(80, 40);
 			this->resetButton->TabIndex = 2;
@@ -468,7 +495,7 @@ namespace VisualInterpreter {
 			this->flowLayoutPanel4->Controls->Add(this->stackTitleLabel);
 			this->flowLayoutPanel4->Location = System::Drawing::Point(3, 183);
 			this->flowLayoutPanel4->Name = L"flowLayoutPanel4";
-			this->flowLayoutPanel4->Size = System::Drawing::Size(654, 64);
+			this->flowLayoutPanel4->Size = System::Drawing::Size(191, 64);
 			this->flowLayoutPanel4->TabIndex = 1;
 			// 
 			// stackTitleLabel
@@ -581,12 +608,58 @@ namespace VisualInterpreter {
 			this->outputTextBox->TabIndex = 1;
 			this->outputTextBox->Text = L"OUTPUT\n--------\n";
 			// 
+			// breakPointLabel
+			// 
+			this->breakPointLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->breakPointLabel->AutoSize = true;
+			this->breakPointLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->breakPointLabel->Location = System::Drawing::Point(3, 0);
+			this->breakPointLabel->Name = L"breakPointLabel";
+			this->breakPointLabel->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->breakPointLabel->Size = System::Drawing::Size(181, 29);
+			this->breakPointLabel->TabIndex = 10;
+			this->breakPointLabel->Text = L"Set Break-Point";
+			// 
+			// breakPointTextBox
+			// 
+			this->breakPointTextBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->breakPointTextBox->BackColor = System::Drawing::Color::LightGray;
+			this->breakPointTextBox->Enabled = false;
+			this->breakPointTextBox->Location = System::Drawing::Point(190, 3);
+			this->breakPointTextBox->Name = L"breakPointTextBox";
+			this->breakPointTextBox->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->breakPointTextBox->Size = System::Drawing::Size(153, 26);
+			this->breakPointTextBox->TabIndex = 11;
+			this->breakPointTextBox->TextChanged += gcnew System::EventHandler(this, &MainForm::breakPointTextBox_TextChanged);
+			// 
+			// flowLayoutPanel10
+			// 
+			this->flowLayoutPanel10->Controls->Add(this->breakPointLabel);
+			this->flowLayoutPanel10->Controls->Add(this->breakPointTextBox);
+			this->flowLayoutPanel10->Controls->Add(this->breakPointButton);
+			this->flowLayoutPanel10->Location = System::Drawing::Point(851, 39);
+			this->flowLayoutPanel10->Name = L"flowLayoutPanel10";
+			this->flowLayoutPanel10->Size = System::Drawing::Size(1026, 48);
+			this->flowLayoutPanel10->TabIndex = 4;
+			// 
+			// breakPointButton
+			// 
+			this->breakPointButton->Location = System::Drawing::Point(349, 3);
+			this->breakPointButton->Name = L"breakPointButton";
+			this->breakPointButton->Size = System::Drawing::Size(80, 40);
+			this->breakPointButton->TabIndex = 12;
+			this->breakPointButton->Text = L"Enter";
+			this->breakPointButton->UseVisualStyleBackColor = true;
+			this->breakPointButton->Click += gcnew System::EventHandler(this, &MainForm::breakPointButton_Click);
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->AutoSizeMode = System::Windows::Forms::AutoSizeMode::GrowAndShrink;
 			this->ClientSize = System::Drawing::Size(1898, 1024);
+			this->Controls->Add(this->flowLayoutPanel10);
 			this->Controls->Add(this->flowLayoutPanel9);
 			this->Controls->Add(this->tableLayoutPanel1);
 			this->Controls->Add(this->flowLayoutPanel1);
@@ -616,6 +689,8 @@ namespace VisualInterpreter {
 			this->flowLayoutPanel7->PerformLayout();
 			this->flowLayoutPanel8->ResumeLayout(false);
 			this->flowLayoutPanel9->ResumeLayout(false);
+			this->flowLayoutPanel10->ResumeLayout(false);
+			this->flowLayoutPanel10->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -633,20 +708,16 @@ namespace VisualInterpreter {
 		{
 			if ((myStream = openFileDialog1->OpenFile()) != nullptr)
 			{
-				
-
 				String^ strfilename = openFileDialog1->InitialDirectory + openFileDialog1->FileName;								
 				String^ JavaFile = File::ReadAllText(strfilename); // text for the java program text box
 				String^ InitialDirectory = openFileDialog1->InitialDirectory;
 				String^ JavaFileName = openFileDialog1->FileName;		
 				std::string OpcodeDisplayFileName;
-
 				//fn = msclr::interop::marshal_as<std::string>(strfilename); // converts System::String to std::string				
 				std::string javaFileName = msclr::interop::marshal_as<std::string>(JavaFileName);
 				std::string initialDirectory = "";
 				std::string createClassFileCommand = "javac " + javaFileName;				
-				WinExec(createClassFileCommand.c_str(), 0);
-
+				system(createClassFileCommand.c_str());
 				eraseSubString(javaFileName, ".java"); //remove .java from string
 				//javaFileName.erase(remove(javaFileName.begin(), javaFileName.end(), ".java"), javaFileName.end()); //remove .java from string
 				OpcodeDisplayFileName = initialDirectory + javaFileName + ".txt";
@@ -663,15 +734,12 @@ namespace VisualInterpreter {
 				std::string temp1 = "cd/ & cd ";
 				std::string javapFileCommand = temp1 + directory + " & javap -v " + baseFilename + " > " + baseFilename + ".opcode";
 				system(javapFileCommand.c_str());
-
 				javapFileCommand = temp1 + directory + " & javap -c " + baseFilename + " > " + baseFilename + ".txt";
-				system(javapFileCommand.c_str());
-				
+				system(javapFileCommand.c_str());				
 				String^ OpcodeFilePath = gcnew String(OpcodeDisplayFileName.c_str());				
 				// Trying to open file... fn
 				String^ OpcodeFile = File::ReadAllText(OpcodeFilePath);
 				this->javaCodeTextBox->Text = JavaFile; // add code to textbox
-
 				this->opcodeTextBox->Text = OpcodeFile;
 				MessageBox::Show("Created " + OpcodeFilePath);
 				myStream->Close();
@@ -694,16 +762,24 @@ namespace VisualInterpreter {
 	}
 
 	private: System::Void runButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		reset();
-		readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
-		interpretResult result = vmInterpret(code, cPool, sizeOfCodeArray, sizeOfConstantPoolArray);
-		update();
-		vm.finishedExecution = true;
-		stepForwardButton->Enabled = false;
+		if (!vm.finishedExecution)
+		{
+			reset();
+			readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
+			interpretResult result = vmInterpret(code, cPool, sizeOfCodeArray, sizeOfConstantPoolArray);
+			update();
+			vm.finishedExecution = true;
+			stepForwardButton->Enabled = false;
+			stepFiveButton->Enabled = false;
+		}
 	}	
 
 	private: System::Void stepForwardButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (!vm.steppingThroughCode)
+		if (code[vm.i].breakPoint)
+		{
+			vm.steppingThroughCode = true;
+		}
+		else if (!vm.steppingThroughCode)
 		{
 			reset();
 			readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
@@ -775,7 +851,7 @@ namespace VisualInterpreter {
 	}
 
 	private: System::Void helpToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-
+		WinExec("cmd.exe /K start https://en.wikipedia.org/wiki/List_of_Java_bytecode_instructions && start https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-6.html", 0);
 	}
 
 	private: System::Void clearToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -790,14 +866,18 @@ namespace VisualInterpreter {
 	{
 		this->runButton->Enabled = true;
 		this->stepForwardButton->Enabled = true;
+		this->stepFiveButton->Enabled = true;
 		this->resetButton->Enabled = true;
+		this->breakPointTextBox->Enabled = true;
 	}
 
 	void disableButtons()
 	{
 		this->runButton->Enabled = false;
 		this->stepForwardButton->Enabled = false;
+		this->stepFiveButton->Enabled = false;
 		this->resetButton->Enabled = false;
+		this->breakPointTextBox->Enabled = false;
 	}
 
 	void flipEnableButtons() // flips from enabled to disabled and vice versa for the buttons
@@ -809,8 +889,6 @@ namespace VisualInterpreter {
 
 	void update()
 	{
-		String^ temp = gcnew String(vm.currentOutput.c_str());
-		outputTextBox->Text = "OUTPUT\n--------\n" + temp;
 		// interpreter / opcodeTextbox updates	
 		if (vm.usingVar0)
 		{
@@ -863,10 +941,10 @@ namespace VisualInterpreter {
 			itemsInStack += "\n";
 		}
 		this->stackTextBox->Text = "" + itemsInStack; // stack
-		
+		consoleTextBoxOutput();
 	}
 
-	void reset()
+	void reset() 
 	{
 		// interpreter updates
 		enableButtons();
@@ -878,6 +956,8 @@ namespace VisualInterpreter {
 		this->stackTextBox->Text = "";
 		this->outputTextBox->Text = "OUTPUT\n--------\n";
 		sizeOfCodeArray = 0;
+		sizeOfConstantPoolArray = 0;
+		//vm.currentOutput = "";
 		vmReset();
 		update();
 	}
@@ -896,6 +976,7 @@ namespace VisualInterpreter {
 	void consoleTextBoxOutput() // updates the console with new text from the interpreter
 	{
 		String^ temp = gcnew String(vm.currentOutput.c_str());
+		outputTextBox->Text = "OUTPUT\n--------\n";
 		outputTextBox->Text += temp;
 	}
 	
@@ -906,6 +987,91 @@ namespace VisualInterpreter {
 	private: System::Void tableLayoutPanel1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
 	}
 	private: System::Void flowLayoutPanel8_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
+	}
+	private: System::Void stepFiveButton_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		if (!vm.steppingThroughCode)
+		{
+			reset();
+			readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
+			vm.steppingThroughCode = true;
+		}
+
+		// we need to get the proper textboxIndex so that we actually highlight the proper opcode instead of the first one it comes across		
+		int textboxIndex = 0; // char index, e.g. getting 't' from "data" would be number 2.
+		int endIndex = 0;
+
+		for (int i = 0; i < sizeOfCodeArray; i++)
+		{
+			if (code[i].methodName == code[vm.i].methodName)
+			{
+				textboxIndex = (i * 17) + 66;
+				break;
+			}
+		}
+
+		for (int i = textboxIndex; i < sizeOfCodeArray; i++)
+		{
+			if (code[i].methodName != code[vm.i].methodName)
+			{
+				//endIndex = (i * 17) + 66;
+				break;
+			}
+		}
+
+		//textboxIndex = opcodeTextBox->TextLength / textboxIndex;
+
+		std::string textBoxText;
+		String^ opcodeInstruction = gcnew String(opcodeToString(code[vm.i].instruction).c_str());
+		String^ item = code[vm.i].opcodeNumber + ": " + opcodeInstruction;
+		String^ temp = opcodeTextBox->Text;
+
+
+
+		textBoxText = msclr::interop::marshal_as<std::string>(opcodeTextBox->Text);
+		textBoxText.erase(remove(textBoxText.begin(), textBoxText.end(), ' '), textBoxText.end()); //remove blank spaces from string
+
+
+		opcodeTextBox->Text = "";
+		opcodeTextBox->Text = temp;
+
+		// search for the text - this will need to be reworked when there are multiple methods
+		opcodeTextBox->Find(item, textboxIndex, opcodeTextBox->TextLength, RichTextBoxFinds::None);
+
+
+
+		// selection colour
+		opcodeTextBox->SelectionBackColor = Color::Red;
+
+		if (!vm.finishedExecution)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (vm.finishedExecution)
+					break;
+				interpretResult result = vmInterpret(code, cPool, sizeOfCodeArray, sizeOfConstantPoolArray);
+				update();
+			}
+		}
+		else
+		{
+			MessageBox::Show("Finished Execution");
+			opcodeTextBox->SelectionBackColor = Color::Transparent;
+		}
+
+		opcodeTextBox->ScrollToCaret();
+	}
+	private: System::Void breakPointTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void breakPointButton_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+		/*
+		String^ breakPointTextBoxText = this->breakPointTextBox->Text;
+		std::string breakPointString = msclr::interop::marshal_as<std::string>(breakPointTextBoxText);
+		int positionOfBreakpoint = stoi(breakPointString);
+		setBreakPoint(code, positionOfBreakpoint);
+		this->breakPointTextBox->Clear();
+		*/
 	}
 };
 }

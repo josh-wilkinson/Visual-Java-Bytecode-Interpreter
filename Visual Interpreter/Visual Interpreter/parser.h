@@ -165,16 +165,22 @@ void parseConstantPoolLine(std::string line, constantPoolLine cPool[256], int& s
 			if (item == "//")
 				break;
 
-			if (itemCount == 1) // item 1: opcode
+			if (itemCount == 1)
 			{
 				// add to array
 				cPool[size].constantName = item;
 			}
-			else if (itemCount >= 2) // item 2: possible operand
+			else if (itemCount == 2)
 			{
 				// add to array
 				//item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
-				cPool[size].constantItem += item;
+				cPool[size].constantItem = item;
+			}
+			else if (itemCount > 2)
+			{
+				std::string temp = " " + item;
+
+				cPool[size].constantItem += temp;
 			}
 		}
 	}
@@ -186,7 +192,9 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 	std::string fn;
 	std::string line;
 	std::string item;
-	std::string methodName;
+	std::string methodName = "";
+	std::string methodDescriptor = "";
+	std::string methodNameAndDescriptor;
 
 	std::istringstream itemReader;
 	std::ifstream myfile(filename);
@@ -195,6 +203,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 	bool isCode = false;
 	bool isConstantPool = false;
 	bool isFilename = false;
+	bool foundMethodName = false;
 	bool foundDescriptor = false;
 
 	if (myfile.is_open())
@@ -203,7 +212,7 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 		{
 			if (isCode)
 			{
-				parseCodeLine(line, code, sizeOfCodeArray, methodName);
+				parseCodeLine(line, code, sizeOfCodeArray, methodNameAndDescriptor);
 			}
 			if (isConstantPool)
 			{
@@ -234,10 +243,29 @@ void readInstructions(codeLine code[256], constantPoolLine constantPool[256], st
 					isConstantPool = false;
 				}
 
-				if (foundDescriptor)
+				if (foundMethodName)
 				{
 					methodName = item;
+					methodName.erase(remove(methodName.begin(), methodName.end(), '('), methodName.end());
+					methodName.erase(remove(methodName.begin(), methodName.end(), ')'), methodName.end());
+					methodName.erase(remove(methodName.begin(), methodName.end(), ','), methodName.end());
+					methodName.erase(remove(methodName.begin(), methodName.end(), ';'), methodName.end());
+					eraseSubStr(methodName, "int");
+					eraseSubStr(methodName, "java.lang.String[]");
+					foundMethodName = false;
+					methodNameAndDescriptor = methodName + methodDescriptor;
+				}
+
+				if (item == "void")
+				{
+					foundMethodName = true;
+				}
+
+				if (foundDescriptor)
+				{
+					methodDescriptor = item;
 					foundDescriptor = false;
+					methodNameAndDescriptor = methodName + methodDescriptor;
 				}
 
 				if (item == "descriptor:")

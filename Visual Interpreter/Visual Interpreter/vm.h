@@ -30,7 +30,7 @@ struct
 	uint64_t stack[STACK_MAX];
 	uint64_t* stack_top;
 
-	// Fixed-size stack
+	// Fixed-size method return locations stack
 	uint64_t methodStack[STACK_MAX];
 	uint64_t* method_stack_top;
 
@@ -52,9 +52,8 @@ struct
 struct codeLine
 {
 	uint64_t opcodeNumber, instruction, operand1, operand2, operand3;
-	// String (method name)
-	std::string methodName;
-	bool breakPoint = false;
+	std::string methodName; // method this line of code belongs to...
+	bool breakPoint = false; // does this line have a break point?
 };
 
 struct constantPoolLine
@@ -124,7 +123,8 @@ typedef enum interpretResult
 	SUCCESS,
 	SUCCESSFUL_STEP,
 	ERROR_DIVISION_BY_ZERO,
-	ERROR_UNKNOWN_OPCODE
+	ERROR_UNKNOWN_OPCODE,
+	BREAKPOINT
 } interpretResult;
 
 void vmReset()
@@ -198,6 +198,60 @@ void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, i
 	}
 }
 
+void shiftLeft()
+{
+	uint64_t tempRegister0 = vm.var0;
+	uint64_t tempRegister1 = vm.var1;
+	uint64_t tempRegister2 = vm.var2;
+	uint64_t tempRegister3 = vm.var3;
+	bool tempUsingVar0 = vm.usingVar0;
+	bool tempUsingVar1 = vm.usingVar1;
+	bool tempUsingVar2 = vm.usingVar2;
+	bool tempUsingVar3 = vm.usingVar3;
+	vm.var0 = tempRegister1;
+	vm.var1 = tempRegister2;
+	vm.var2 = tempRegister3;
+	vm.var3 = tempRegister0;
+	vm.usingVar0 = tempUsingVar1;
+	vm.usingVar1 = tempUsingVar2;
+	vm.usingVar2 = tempUsingVar3;
+	vm.usingVar3 = tempUsingVar0;
+}
+
+void parseConstantItemPositions(std::string utf8, uint64_t& value1, uint64_t& value2)
+{
+
+	std::string tempString = "";
+
+	utf8.erase(remove(utf8.begin(), utf8.end(), '#'), utf8.end()); //remove # from string
+
+	for (int j = 0; j <= utf8.size(); j++)
+	{
+		char c;
+		if (j < utf8.size())
+			c = utf8.at(j);
+		else
+			c = utf8.at(j - 1);
+		if (c == ':' || c == '.')
+		{
+			value1 = stoi(tempString);
+			tempString = "";
+		}
+		else if (j == utf8.size())
+		{
+			value2 = stoi(tempString);
+			break;
+		}
+		else
+			tempString += c;
+	}
+}
+
+void setBreakPoint(codeLine program[256], int pos)
+{
+	program[pos].breakPoint = !program[pos].breakPoint;
+}
+
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {
@@ -208,11 +262,14 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 
 	bool branching = false;
 	bool methodCalling = false;
+	bool canContinue = false;
 	int beginningOfMethod = 0;
 	int endOfMethod = sizeOfCodeArray;
 	int counter = 0;
 	uint64_t value1;
 	uint64_t value2;
+	uint64_t value3;
+	uint64_t value4;
 	std::string utf8;
 
 	std::cout << "Interpreter started" << std::endl;
@@ -223,6 +280,11 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		methodCalling = false;
 		counter = program[vm.i].instruction;
 		std::cout << "Counter: " << vm.i << std::endl;
+
+		if (program[vm.i].breakPoint && !vm.steppingThroughCode)
+		{
+			break;
+		}
 
 		switch (instruction)
 		{
@@ -273,7 +335,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case if_icmpne:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " != " << value1 << std::endl;
 			if (value2 != value1)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -282,7 +343,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case if_icmpeq:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " == " << value1 << std::endl;
 			if (value2 == value1)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -291,7 +351,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case if_icmpgt:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " > " << value1 << std::endl;
 			if (value2 > value1)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -300,7 +359,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case if_icmplt:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " < " << value1 << std::endl;
 			if (value2 < value1)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -309,7 +367,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case if_icmple:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " <= " << value1 << std::endl;
 			if (value2 <= value1)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -318,7 +375,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case if_icmpge:
 			value1 = vmStackPop();
 			value2 = vmStackPop();
-			std::cout << "?: " << value2 << " >= " << value1 << std::endl;
 			if (value2 >= value1)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -327,7 +383,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			break;
 		case ifeq:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is 0 " << std::endl;
 			if (value1 == 0)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -335,7 +390,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			break;
 		case ifne:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is not 0 " << std::endl;
 			if (value1 != 0)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -343,7 +397,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			break;
 		case ifgt:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is > 0 " << std::endl;
 			if (value1 > 0)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -351,7 +404,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			break;
 		case ifge:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is >= 0 " << std::endl;
 			if (value1 >= 0)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -359,7 +411,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			break;
 		case iflt:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is < 0 " << std::endl;
 			if (value1 < 0)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -367,7 +418,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			break;
 		case ifle:
 			value1 = vmStackPop();
-			std::cout << "?: " << value1 << " is <= 0 " << std::endl;
 			if (value1 <= 0)
 			{
 				branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
@@ -398,9 +448,28 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 				break;
 			}
 			break;
-		case iload:
+		case iload: // loads a register variable into the stack
 			// format: opcode operand
 			// different way to iload_0 to iload_3
+			switch (program[vm.i].operand1)
+			{
+			case 0:
+				value1 = vm.var0;
+				vmStackPush(value1);
+				break;
+			case 1:
+				value1 = vm.var1;
+				vmStackPush(value1);
+				break;
+			case 2:
+				value1 = vm.var2;
+				vmStackPush(value1);
+				break;
+			case 3:
+				value1 = vm.var3;
+				vmStackPush(value1);
+				break;
+			}
 			break;
 		case iload_0:
 			value1 = vm.var0;
@@ -421,7 +490,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		case invokespecial:
 			// Find the main method in the code array and jump to that
 			//methodCalling = true;			
-			utf8 = "([Ljava/lang/String;)V";
+			utf8 = "main([Ljava/lang/String;)V";
 			for (int j = 0; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].methodName == utf8)
@@ -436,9 +505,16 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// Find the method in the code array and jump to that
 			methodCalling = true;
 			value1 = program[vm.i].operand1;
-			value2 = vm.i;
-			// getting method name called, e.g. java/lang/Object."<init>":()V
-			utf8 = cPool[value1 + 4].constantItem;
+			value2 = vm.i; // current positon in the program array
+			utf8 = cPool[value1 - 1].constantItem;
+			parseConstantItemPositions(utf8, value3, value4);
+			// value4 contains the string location to the name and type of the method
+			utf8 = cPool[value4 - 1].constantItem;
+			parseConstantItemPositions(utf8, value3, value4);
+			// value 3 is the index of the name
+			// value 4 is the index of the type
+			utf8 = cPool[value3 - 1].constantItem + cPool[value4 - 1].constantItem; // method name and descriptor
+
 			for (int j = 0; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].methodName == utf8)
@@ -449,7 +525,9 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 					break;
 				}
 			}
-			break;
+			for (int j = 0; j <= vm.elementsInStack; j++)
+				vmStackPop();
+			shiftLeft();
 			break;
 		case invokevirtual:
 			value1 = vmStackPop();
@@ -537,7 +615,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			branch(program, sizeOfCodeArray, beginningOfMethod, endOfMethod, branching);
 			break;
 		case OP_DONE:
-			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
+			if (program[vm.i].methodName == "main([Ljava/lang/String;)V")
 			{
 				vm.finishedExecution = true;
 				return SUCCESS;
@@ -553,7 +631,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			//std::cout << program[vm.i].methodName << std::endl;
 			break;
 		case ireturn:
-			if (program[vm.i].methodName == "([Ljava/lang/String;)V")
+			if (program[vm.i].methodName == "main([Ljava/lang/String;)V")
 			{
 				vm.finishedExecution = true;
 				return SUCCESS;
@@ -581,6 +659,9 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		if (!branching && !methodCalling)
 			vm.i++;
 	} while (!vm.steppingThroughCode);
+
+	if (program[vm.i].breakPoint)
+		return BREAKPOINT;
 
 	if (vm.steppingThroughCode)
 		return SUCCESSFUL_STEP;
@@ -712,5 +793,14 @@ std::string opcodeToString(uint64_t str)
 		return "NA";
 }
 
-
+void eraseSubStr(std::string& mainStr, const std::string& toErase)
+{
+	// Search for the substring in string
+	size_t pos = mainStr.find(toErase);
+	if (pos != std::string::npos)
+	{
+		// If found then erase it from string
+		mainStr.erase(pos, toErase.length());
+	}
+}
 
