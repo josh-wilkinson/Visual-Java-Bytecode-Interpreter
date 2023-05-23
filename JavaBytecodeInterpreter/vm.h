@@ -199,22 +199,22 @@ void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, i
 
 void shiftLeft()
 {
-	// shift values to the left
-	vm.var0 = vm.var1;
-	vm.var1 = vm.var2;
-	vm.var2 = vm.var3;
-	vm.var3 = vm.var0;
-	// swap
-	bool temp;
-	temp = vm.var0;
-	vm.usingVar0 = vm.usingVar1;
-	vm.usingVar1 = temp;
-	temp = vm.var1;
-	vm.usingVar1 = vm.usingVar2;
-	vm.usingVar2 = temp;
-	temp = vm.var2;
-	vm.usingVar2 = vm.usingVar3;
-	vm.usingVar3 = temp;
+	uint64_t tempRegister0 = vm.var0;
+	uint64_t tempRegister1 = vm.var1;
+	uint64_t tempRegister2 = vm.var2;
+	uint64_t tempRegister3 = vm.var3;
+	bool tempUsingVar0 = vm.usingVar0;
+	bool tempUsingVar1 = vm.usingVar1;
+	bool tempUsingVar2 = vm.usingVar2;
+	bool tempUsingVar3 = vm.usingVar3;
+	vm.var0 = tempRegister1;
+	vm.var1 = tempRegister2;
+	vm.var2 = tempRegister3;
+	vm.var3 = tempRegister0;
+	vm.usingVar0 = tempUsingVar1;
+	vm.usingVar1 = tempUsingVar2;
+	vm.usingVar2 = tempUsingVar3;
+	vm.usingVar3 = tempUsingVar0;
 }
 
 void parseConstantItemPositions(std::string utf8, uint64_t& value1, uint64_t& value2)
@@ -493,20 +493,14 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// Find the method in the code array and jump to that
 			methodCalling = true;
 			value1 = program[vm.i].operand1;
-			value2 = vm.i;
-			// getting method name called, e.g. java/lang/Object."<init>":()V
-			//utf8 = cPool[value1 + 4].constantItem;
-
+			value2 = vm.i; // current positon in the program array
 			utf8 = cPool[value1-1].constantItem;
-
 			parseConstantItemPositions(utf8, value3, value4);
-
 			// value4 contains the string location to the name and type of the method
 			utf8 = cPool[value4-1].constantItem;
 			parseConstantItemPositions(utf8, value3, value4);
 			// value 3 is the index of the name
 			// value 4 is the index of the type
-
 			utf8 = cPool[value3 - 1].constantItem + cPool[value4 - 1].constantItem; // method name and descriptor
 
 			for (int j = 0; j < sizeOfCodeArray; j++)
