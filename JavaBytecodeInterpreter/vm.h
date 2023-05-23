@@ -30,7 +30,7 @@ struct
 	uint64_t stack[STACK_MAX];
 	uint64_t* stack_top;
 
-	// Fixed-size stack
+	// Fixed-size method return locations stack
 	uint64_t methodStack[STACK_MAX];
 	uint64_t* method_stack_top;
 
@@ -164,26 +164,6 @@ uint64_t methodStackPop(void)
 	return *vm.method_stack_top;
 }
 
-void jumpToOpcodeNumber(codeLine program[], int index, bool branching, int size) // same as GOTO
-{
-	uint64_t lineNum = program[index].operand1;
-
-	// beginningOfMethod - say if we have multiple methods in the program array, then to get to the start of the method we need to subract the opcode number (e.g. 7) into the index.
-	int beginningOfMethod = index - program[index].opcodeNumber;
-
-	if (beginningOfMethod < 0)
-		beginningOfMethod = 0;
-	for (int j = beginningOfMethod; j < size; j++)
-	{
-		if (program[j].opcodeNumber == lineNum)
-		{
-			vm.i = j;
-			branching = true;
-			break;
-		}
-	}
-}
-
 void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, int endOfMethod, bool& branching)
 {
 	for (int i = 0; i < sizeOfCodeArray; i++)
@@ -217,6 +197,55 @@ void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, i
 	}
 }
 
+void shiftLeft()
+{
+	// shift values to the left
+	vm.var0 = vm.var1;
+	vm.var1 = vm.var2;
+	vm.var2 = vm.var3;
+	vm.var3 = vm.var0;
+	// swap
+	bool temp;
+	temp = vm.var0;
+	vm.usingVar0 = vm.usingVar1;
+	vm.usingVar1 = temp;
+	temp = vm.var1;
+	vm.usingVar1 = vm.usingVar2;
+	vm.usingVar2 = temp;
+	temp = vm.var2;
+	vm.usingVar2 = vm.usingVar3;
+	vm.usingVar3 = temp;
+}
+
+void parseConstantItemPositions(std::string utf8, uint64_t& value1, uint64_t& value2)
+{
+
+	std::string tempString = "";
+
+	utf8.erase(remove(utf8.begin(), utf8.end(), '#'), utf8.end()); //remove # from string
+
+	for (int j = 0; j <= utf8.size(); j++)
+	{
+		char c;
+		if (j < utf8.size())
+			c = utf8.at(j);
+		else
+			c = utf8.at(j - 1);
+		if (c == ':' || c == '.')
+		{
+			value1 = stoi(tempString);
+			tempString = "";
+		}
+		else if (j == utf8.size())
+		{
+			value2 = stoi(tempString);
+			break;
+		}
+		else
+			tempString += c;
+	}
+}
+
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {
@@ -232,6 +261,8 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 	int counter = 0;
 	uint64_t value1;
 	uint64_t value2;
+	uint64_t value3;
+	uint64_t value4;
 	std::string utf8;
 
 	std::cout << "Interpreter started" << std::endl;
@@ -464,7 +495,18 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			value1 = program[vm.i].operand1;
 			value2 = vm.i;
 			// getting method name called, e.g. java/lang/Object."<init>":()V
-			utf8 = cPool[value1 + 4].constantItem;
+			//utf8 = cPool[value1 + 4].constantItem;
+
+			utf8 = cPool[value1-1].constantItem;
+
+			parseConstantItemPositions(utf8, value3, value4);
+
+			// value4 contains the string location to the name and type of the method
+			utf8 = cPool[value4-1].constantItem;
+			parseConstantItemPositions(utf8, value3, value4);
+			// value 3 is the index of the name
+			// value 4 is the index of the type
+
 			for (int j = 0; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].methodName == utf8)
@@ -474,8 +516,15 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 					std::cout << "FOUND METHOD " << utf8 << std::endl;
 					break;
 				}
+				else
+				{
+					std::cout << "METHOD NOT FOUND" << std::endl;
+					return SUCCESS;
+				}
 			}
-			break;
+			for (int j = 0; j <= vm.elementsInStack; j++)
+				vmStackPop();
+			shiftLeft();
 			break;
 		case invokevirtual:
 			value1 = vmStackPop();
