@@ -123,7 +123,8 @@ typedef enum interpretResult
 	SUCCESS,
 	SUCCESSFUL_STEP,
 	ERROR_DIVISION_BY_ZERO,
-	ERROR_UNKNOWN_OPCODE
+	ERROR_UNKNOWN_OPCODE,
+	BREAKPOINT
 } interpretResult;
 
 void vmReset()
@@ -254,6 +255,8 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		vmReset();
 	}
 
+
+
 	bool branching = false;
 	bool methodCalling = false;
 	int beginningOfMethod = 0;
@@ -273,6 +276,9 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		methodCalling = false;
 		counter = program[vm.i].instruction;
 		std::cout << "Counter: " << vm.i << std::endl;
+
+		if (program[vm.i].breakPoint)
+			break;
 
 		switch (instruction)
 		{
@@ -647,6 +653,9 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		if (!branching && !methodCalling)
 			vm.i++;
 	} while (!vm.steppingThroughCode);
+
+	if (program[vm.i].breakPoint)
+		return BREAKPOINT;
 
 	if (vm.steppingThroughCode)
 		return SUCCESSFUL_STEP;

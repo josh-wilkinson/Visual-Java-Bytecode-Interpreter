@@ -37,6 +37,12 @@ int main(int argc, char* argv[])
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
 	{		
+		std::cout << "Where do you want to set a breakpoint?? : ";
+		int num;
+		std::cin >> num;
+
+		code[num].breakPoint = true;
+
 		interpretResult result = vmInterpret(code, constantPool, sizeOfCodeArray, sizeOfCPoolArray);
 
 		std::cout << "var 0: " << vm.var0 << std::endl;
