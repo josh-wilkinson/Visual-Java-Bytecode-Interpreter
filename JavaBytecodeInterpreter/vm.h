@@ -19,21 +19,17 @@
 // stack based interpreter
 struct
 {
-	uint8_t* ip;
 	int i = 0; // index
 	bool steppingThroughCode = false;
 	bool finishedExecution = false;
 	int elementsInStack = 0;
 	int elementsInMethodStack = 0;
-
 	// Fixed-size stack
 	uint64_t stack[STACK_MAX];
 	uint64_t* stack_top;
-
 	// Fixed-size method return locations stack
 	uint64_t methodStack[STACK_MAX];
 	uint64_t* method_stack_top;
-
 	// Registers
 	uint64_t var0;
 	uint64_t var1;
@@ -249,26 +245,21 @@ void parseConstantItemPositions(std::string utf8, uint64_t& value1, uint64_t& va
 
 void setBreakPoint(codeLine program[256], int pos)
 {
-	program[pos].breakPoint = true;
-}
-
-void removeBreakPoint(codeLine program[256], int pos)
-{
-	program[pos].breakPoint = false;
+	program[pos].breakPoint = !program[pos].breakPoint;
 }
 
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {
-	if (!vm.steppingThroughCode)
+	if (!vm.steppingThroughCode || !program[vm.i].breakPoint)
 	{
 		vmReset();
 	}
 
-
-
 	bool branching = false;
 	bool methodCalling = false;
+	bool canContinue = false;
+	bool addingStringToStack = false;
 	int beginningOfMethod = 0;
 	int endOfMethod = sizeOfCodeArray;
 	int counter = 0;
@@ -287,8 +278,10 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 		counter = program[vm.i].instruction;
 		std::cout << "Counter: " << vm.i << std::endl;
 
-		if (program[vm.i].breakPoint)
+		if (program[vm.i].breakPoint && !vm.steppingThroughCode)
+		{
 			break;
+		}
 
 		switch (instruction)
 		{
@@ -540,9 +533,25 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// check for PrintStream, then output to console
 			utf8 = cPool[value2].constantItem;
 			if (utf8 == "print")
-				vm.currentOutput += cPool[value1].constantItem;
+			{
+				if (addingStringToStack)
+				{
+					vm.currentOutput += cPool[value1].constantItem;
+					addingStringToStack = false;
+				}
+				else
+					vm.currentOutput += std::to_string(value1);
+			}
 			else if (utf8 == "println")
-				vm.currentOutput += cPool[value1].constantItem + "\n";
+			{
+				if (addingStringToStack)
+				{
+					vm.currentOutput += cPool[value1].constantItem + "\n";
+					addingStringToStack = false;
+				}
+				else
+					vm.currentOutput += std::to_string(value1) + "\n";
+			}
 			break;
 		case imul:
 			value1 = vmStackPop();
@@ -613,6 +622,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			break;
 		case ldc:
 			value1 = program[vm.i].operand1;
+			addingStringToStack = true;
 			vmStackPush(value1);
 			break;
 		case GOTO:

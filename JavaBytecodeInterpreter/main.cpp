@@ -6,11 +6,12 @@ int main(int argc, char* argv[])
 	codeLine code[256]; // array of lines of code
 	constantPoolLine constantPool[256];
 	int sizeOfCodeArray = 0; // number of elements in code array
-	int sizeOfCPoolArray = 0;
+	int sizeOfCPoolArray = 0; // number of elements in constant pool array
 
-	// Parse text file
-	readInstructions(code, constantPool, "CallTest.opcode", sizeOfCodeArray, sizeOfCPoolArray);
+	// Parse text/opcode file
+	readInstructions(code, constantPool, "RetI.opcode", sizeOfCodeArray, sizeOfCPoolArray);
 	
+	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
 	{
 		std::cout << "Line: " << byteToReadableFormat(code[i].opcodeNumber) << std::endl;
@@ -21,7 +22,7 @@ int main(int argc, char* argv[])
 		//std::cout << "Op.3: " << byteToReadableFormat(code[i].operand3) << std::endl;
 		std::cout << std::endl;
 	}
-	
+	*/
 	/*
 	for (int i = 0; i < sizeOfCPoolArray; i++)
 	{
@@ -36,14 +37,7 @@ int main(int argc, char* argv[])
 
 	// use these for testing
 	(void)argc; (void)argv; // tells the compiler to stop complaining about unused variables
-	{		
-		std::cout << "Where do you want to set a breakpoint?? : ";
-		int num;
-		std::cin >> num;
-
-		setBreakPoint(code, num);
-		//removeBreakPoint(code, num);
-
+	{
 		interpretResult result = vmInterpret(code, constantPool, sizeOfCodeArray, sizeOfCPoolArray);
 
 		std::cout << "var 0: " << vm.var0 << std::endl;
@@ -51,7 +45,9 @@ int main(int argc, char* argv[])
 		std::cout << "var 2: " << vm.var2 << std::endl;
 		std::cout << "var 3: " << vm.var3 << std::endl;
 
-		//assert(result == SUCCESS);
+		std::cout << vm.currentOutput << std::endl;
+
+		assert(result == SUCCESS);
 
 		if (result == SUCCESS)
 			std::cout << "Interpreter ran successfully!";

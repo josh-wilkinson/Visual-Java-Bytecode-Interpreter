@@ -170,11 +170,16 @@ void parseConstantPoolLine(std::string line, constantPoolLine cPool[256], int& s
 				// add to array
 				cPool[size].constantName = item;
 			}
-			else if (itemCount >= 2) 
+			else if (itemCount == 2) 
 			{
 				// add to array
 				//item.erase(remove(item.begin(), item.end(), '#'), item.end()); //remove # from string
-				cPool[size].constantItem += item;
+				cPool[size].constantItem = item;
+			}
+			else if (itemCount > 2)
+			{
+				std::string temp = " " + item;
+				cPool[size].constantItem += temp;
 			}
 		}
 	}
