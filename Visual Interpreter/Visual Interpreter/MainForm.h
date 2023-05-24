@@ -61,7 +61,7 @@ namespace VisualInterpreter {
 	private: System::Windows::Forms::ToolStripMenuItem^ fileToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ openToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^ exitToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ optionsToolStripMenuItem;
+
 	private: System::Windows::Forms::ToolStripMenuItem^ helpToolStripMenuItem;
 	private: System::Windows::Forms::FlowLayoutPanel^ flowLayoutPanel1;
 	private: System::Windows::Forms::Button^ runButton;
@@ -100,8 +100,8 @@ namespace VisualInterpreter {
 
 
 
-	private: System::Windows::Forms::ToolStripMenuItem^ viewToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ javaCodeToolStripMenuItem;
+
+
 	private: System::Windows::Forms::FlowLayoutPanel^ flowLayoutPanel9;
 	private: System::Windows::Forms::RichTextBox^ outputTextBox;
 	private: System::Windows::Forms::Button^ stepFiveButton;
@@ -154,10 +154,7 @@ namespace VisualInterpreter {
 			this->openToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->clearToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->exitToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->optionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->viewToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->javaCodeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->flowLayoutPanel1 = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->runButton = (gcnew System::Windows::Forms::Button());
 			this->stepForwardButton = (gcnew System::Windows::Forms::Button());
@@ -211,9 +208,9 @@ namespace VisualInterpreter {
 			this->menuStrip1->BackColor = System::Drawing::SystemColors::ActiveBorder;
 			this->menuStrip1->GripMargin = System::Windows::Forms::Padding(2, 2, 0, 2);
 			this->menuStrip1->ImageScalingSize = System::Drawing::Size(24, 24);
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
 				this->fileToolStripMenuItem,
-					this->optionsToolStripMenuItem, this->helpToolStripMenuItem, this->viewToolStripMenuItem
+					this->helpToolStripMenuItem
 			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
@@ -234,29 +231,23 @@ namespace VisualInterpreter {
 			// openToolStripMenuItem
 			// 
 			this->openToolStripMenuItem->Name = L"openToolStripMenuItem";
-			this->openToolStripMenuItem->Size = System::Drawing::Size(158, 34);
+			this->openToolStripMenuItem->Size = System::Drawing::Size(270, 34);
 			this->openToolStripMenuItem->Text = L"Open";
 			this->openToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::openToolStripMenuItem_Click);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this->clearToolStripMenuItem->Name = L"clearToolStripMenuItem";
-			this->clearToolStripMenuItem->Size = System::Drawing::Size(158, 34);
+			this->clearToolStripMenuItem->Size = System::Drawing::Size(270, 34);
 			this->clearToolStripMenuItem->Text = L"Clear";
 			this->clearToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::clearToolStripMenuItem_Click);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-			this->exitToolStripMenuItem->Size = System::Drawing::Size(158, 34);
+			this->exitToolStripMenuItem->Size = System::Drawing::Size(270, 34);
 			this->exitToolStripMenuItem->Text = L"Exit";
 			this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::exitToolStripMenuItem_Click);
-			// 
-			// optionsToolStripMenuItem
-			// 
-			this->optionsToolStripMenuItem->Name = L"optionsToolStripMenuItem";
-			this->optionsToolStripMenuItem->Size = System::Drawing::Size(92, 29);
-			this->optionsToolStripMenuItem->Text = L"Options";
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -264,20 +255,6 @@ namespace VisualInterpreter {
 			this->helpToolStripMenuItem->Size = System::Drawing::Size(65, 29);
 			this->helpToolStripMenuItem->Text = L"Help";
 			this->helpToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::helpToolStripMenuItem_Click);
-			// 
-			// viewToolStripMenuItem
-			// 
-			this->viewToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->javaCodeToolStripMenuItem });
-			this->viewToolStripMenuItem->Name = L"viewToolStripMenuItem";
-			this->viewToolStripMenuItem->Size = System::Drawing::Size(65, 29);
-			this->viewToolStripMenuItem->Text = L"View";
-			// 
-			// javaCodeToolStripMenuItem
-			// 
-			this->javaCodeToolStripMenuItem->Name = L"javaCodeToolStripMenuItem";
-			this->javaCodeToolStripMenuItem->Size = System::Drawing::Size(194, 34);
-			this->javaCodeToolStripMenuItem->Text = L"Java Code";
-			this->javaCodeToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainForm::javaCodeToolStripMenuItem_Click);
 			// 
 			// flowLayoutPanel1
 			// 
@@ -617,16 +594,16 @@ namespace VisualInterpreter {
 			this->breakPointLabel->Location = System::Drawing::Point(3, 0);
 			this->breakPointLabel->Name = L"breakPointLabel";
 			this->breakPointLabel->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->breakPointLabel->Size = System::Drawing::Size(181, 29);
+			this->breakPointLabel->Size = System::Drawing::Size(278, 29);
 			this->breakPointLabel->TabIndex = 10;
-			this->breakPointLabel->Text = L"Set Break-Point";
+			this->breakPointLabel->Text = L"Set/Remove Break-Point";
 			// 
 			// breakPointTextBox
 			// 
 			this->breakPointTextBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->breakPointTextBox->BackColor = System::Drawing::Color::LightGray;
 			this->breakPointTextBox->Enabled = false;
-			this->breakPointTextBox->Location = System::Drawing::Point(190, 3);
+			this->breakPointTextBox->Location = System::Drawing::Point(287, 3);
 			this->breakPointTextBox->Name = L"breakPointTextBox";
 			this->breakPointTextBox->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->breakPointTextBox->Size = System::Drawing::Size(153, 26);
@@ -645,7 +622,7 @@ namespace VisualInterpreter {
 			// 
 			// breakPointButton
 			// 
-			this->breakPointButton->Location = System::Drawing::Point(349, 3);
+			this->breakPointButton->Location = System::Drawing::Point(446, 3);
 			this->breakPointButton->Name = L"breakPointButton";
 			this->breakPointButton->Size = System::Drawing::Size(80, 40);
 			this->breakPointButton->TabIndex = 12;
@@ -741,10 +718,22 @@ namespace VisualInterpreter {
 				String^ OpcodeFile = File::ReadAllText(OpcodeFilePath);
 				this->javaCodeTextBox->Text = JavaFile; // add code to textbox
 				this->opcodeTextBox->Text = OpcodeFile;
-				MessageBox::Show("Created " + OpcodeFilePath);
+
+				if (this->opcodeTextBox->Text == "")
+					MessageBox::Show("Error: there is something wrong with the Java file.\n Please check your syntax and try again.");
+				else
+					MessageBox::Show("Created " + OpcodeFilePath);
 				myStream->Close();
+				for (int i = 0; i < sizeOfCodeArray; i++)
+				{
+					if (code[i].breakPoint)
+					{
+						code[i].breakPoint = false;
+					}
+				}
 				reset();
 				enableButtons();
+				readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
 			}
 		}
 	}
@@ -764,11 +753,23 @@ namespace VisualInterpreter {
 	private: System::Void runButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (!vm.finishedExecution)
 		{
-			reset();
-			readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
-			interpretResult result = vmInterpret(code, cPool, sizeOfCodeArray, sizeOfConstantPoolArray);
-			update();
-			vm.finishedExecution = true;
+			if (!code[vm.i].breakPoint)
+			{
+				reset();
+				readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
+				interpretResult result = vmInterpret(code, cPool, sizeOfCodeArray, sizeOfConstantPoolArray);
+				update();
+			}
+			else
+			{
+				code[vm.i].breakPoint = false;
+				interpretResult result = vmInterpret(code, cPool, sizeOfCodeArray, sizeOfConstantPoolArray);
+				update();
+				vm.finishedExecution = true;
+			}
+		}
+		if (vm.finishedExecution)
+		{
 			stepForwardButton->Enabled = false;
 			stepFiveButton->Enabled = false;
 		}
@@ -788,22 +789,20 @@ namespace VisualInterpreter {
 		
 		// we need to get the proper textboxIndex so that we actually highlight the proper opcode instead of the first one it comes across		
 		int textboxIndex = 0; // char index, e.g. getting 't' from "data" would be number 2.
-		int endIndex = 0;
 
 		for (int i = 0; i < sizeOfCodeArray; i++)
 		{
 			if (code[i].methodName == code[vm.i].methodName)
 			{
-				textboxIndex = (i * 17) + 66;
-				break;
-			}
-		}
-
-		for (int i = textboxIndex; i < sizeOfCodeArray; i++)
-		{
-			if (code[i].methodName != code[vm.i].methodName)
-			{
-				//endIndex = (i * 17) + 66;
+				textboxIndex = (i * 17) + (66 + 72);
+				if (code[vm.i].instruction == invokespecial)
+				{
+					textboxIndex -= 72;
+				}
+				else if (code[vm.i].instruction == aload_0)
+				{
+					textboxIndex -= (66 + 72);
+				}
 				break;
 			}
 		}
@@ -814,21 +813,12 @@ namespace VisualInterpreter {
 		String^ opcodeInstruction = gcnew String(opcodeToString(code[vm.i].instruction).c_str());
 		String^ item = code[vm.i].opcodeNumber + ": " + opcodeInstruction;
 		String^ temp = opcodeTextBox->Text;
-
-			
-
 		textBoxText = msclr::interop::marshal_as<std::string>(opcodeTextBox->Text);
 		textBoxText.erase(remove(textBoxText.begin(), textBoxText.end(), ' '), textBoxText.end()); //remove blank spaces from string
-
-
 		opcodeTextBox->Text = "";
 		opcodeTextBox->Text = temp;
-
 		// search for the text - this will need to be reworked when there are multiple methods
-		opcodeTextBox->Find(item, textboxIndex, opcodeTextBox->TextLength, RichTextBoxFinds::None);
-		
-		
-		
+		opcodeTextBox->Find(item, textboxIndex, opcodeTextBox->TextLength, RichTextBoxFinds::None);		
 		// selection colour
 		opcodeTextBox->SelectionBackColor = Color::Red;	
 
@@ -851,7 +841,7 @@ namespace VisualInterpreter {
 	}
 
 	private: System::Void helpToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-		WinExec("cmd.exe /K start https://en.wikipedia.org/wiki/List_of_Java_bytecode_instructions && start https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-6.html", 0);
+		WinExec("cmd.exe /K start http://visualbytecode123.pythonanywhere.com/", 0);
 	}
 
 	private: System::Void clearToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -889,6 +879,26 @@ namespace VisualInterpreter {
 
 	void update()
 	{
+		for (int i = 0; i < sizeOfCodeArray; i++)
+		{
+			if (code[i].breakPoint)
+			{
+				int textboxIndex = 0;
+				std::string textBoxText;
+				String^ opcodeInstruction = gcnew String(opcodeToString(code[i].instruction).c_str());
+				String^ item = code[i].opcodeNumber + ": " + opcodeInstruction;
+				String^ temp = opcodeTextBox->Text;
+				textBoxText = msclr::interop::marshal_as<std::string>(opcodeTextBox->Text);
+				textBoxText.erase(remove(textBoxText.begin(), textBoxText.end(), ' '), textBoxText.end()); //remove blank spaces from string
+				//opcodeTextBox->Text = "";
+				//opcodeTextBox->Text = temp;
+				// search for the text - this will need to be reworked when there are multiple methods
+				opcodeTextBox->Find(item, textboxIndex, opcodeTextBox->TextLength, RichTextBoxFinds::None);
+				// selection colour
+				opcodeTextBox->SelectionBackColor = Color::Orange;
+			}
+		}
+
 		// interpreter / opcodeTextbox updates	
 		if (vm.usingVar0)
 		{
@@ -958,7 +968,18 @@ namespace VisualInterpreter {
 		sizeOfCodeArray = 0;
 		sizeOfConstantPoolArray = 0;
 		//vm.currentOutput = "";
+		if (vm.finishedExecution)
+		{
+			for (int i = 0; i < sizeOfCodeArray; i++)
+			{
+				if (code[i].breakPoint)
+				{
+					code[i].breakPoint = false;
+				}
+			}
+		}
 		vmReset();
+		readInstructions(code, cPool, fn, sizeOfCodeArray, sizeOfConstantPoolArray);
 		update();
 	}
 
@@ -978,6 +999,14 @@ namespace VisualInterpreter {
 		String^ temp = gcnew String(vm.currentOutput.c_str());
 		outputTextBox->Text = "OUTPUT\n--------\n";
 		outputTextBox->Text += temp;
+	}
+
+	bool isNumber(const std::string& str)
+	{
+		std::string::const_iterator iter = str.begin();
+		while (iter != str.end() && std::isdigit(*iter))
+			++iter;
+		return !str.empty() && iter == str.end();
 	}
 	
 	private: System::Void javaCodeToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) 
@@ -1064,14 +1093,30 @@ namespace VisualInterpreter {
 	private: System::Void breakPointTextBox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void breakPointButton_Click(System::Object^ sender, System::EventArgs^ e) 
-	{
-		/*
-		String^ breakPointTextBoxText = this->breakPointTextBox->Text;
-		std::string breakPointString = msclr::interop::marshal_as<std::string>(breakPointTextBoxText);
-		int positionOfBreakpoint = stoi(breakPointString);
-		setBreakPoint(code, positionOfBreakpoint);
+	{		
+		if (this->breakPointTextBox->Enabled)
+		{
+			String^ breakPointTextBoxText = this->breakPointTextBox->Text;
+			std::string breakPointString = msclr::interop::marshal_as<std::string>(breakPointTextBoxText);
+			if (isNumber(breakPointString))
+			{
+				int positionOfBreakpoint = stoi(breakPointString);				
+				if (positionOfBreakpoint < sizeOfCodeArray)
+				{
+					setBreakPoint(code, positionOfBreakpoint);
+					update();
+				}
+				else
+				{
+					MessageBox::Show("Invalid Entry: Opcode does not exist.");
+				}
+			}
+			else
+			{
+				MessageBox::Show("Not a number!");
+			}
+		}
 		this->breakPointTextBox->Clear();
-		*/
 	}
 };
 }

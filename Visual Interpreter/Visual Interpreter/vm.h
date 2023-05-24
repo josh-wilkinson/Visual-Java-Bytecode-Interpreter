@@ -19,21 +19,18 @@
 // stack based interpreter
 struct
 {
-	uint8_t* ip;
 	int i = 0; // index
 	bool steppingThroughCode = false;
 	bool finishedExecution = false;
+	bool addingStringToStack = false;
 	int elementsInStack = 0;
 	int elementsInMethodStack = 0;
-
 	// Fixed-size stack
 	uint64_t stack[STACK_MAX];
 	uint64_t* stack_top;
-
 	// Fixed-size method return locations stack
 	uint64_t methodStack[STACK_MAX];
 	uint64_t* method_stack_top;
-
 	// Registers
 	uint64_t var0;
 	uint64_t var1;
@@ -175,7 +172,6 @@ void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, i
 			break;
 		}
 	}
-
 	for (int i = beginningOfMethod; i < sizeOfCodeArray; i++)
 	{
 		if (program[i].methodName != program[vm.i].methodName)
@@ -184,8 +180,7 @@ void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, i
 			break;
 		}
 	}
-
-	for (int j = beginningOfMethod; j < endOfMethod; j++)
+	for (int j = beginningOfMethod; j <= endOfMethod; j++)
 	{
 		if (program[j].opcodeNumber == program[vm.i].operand1)
 		{
@@ -220,11 +215,8 @@ void shiftLeft()
 
 void parseConstantItemPositions(std::string utf8, uint64_t& value1, uint64_t& value2)
 {
-
 	std::string tempString = "";
-
 	utf8.erase(remove(utf8.begin(), utf8.end(), '#'), utf8.end()); //remove # from string
-
 	for (int j = 0; j <= utf8.size(); j++)
 	{
 		char c;
@@ -252,6 +244,11 @@ void setBreakPoint(codeLine program[256], int pos)
 	program[pos].breakPoint = !program[pos].breakPoint;
 }
 
+void removeBreakPoint(codeLine program[256], int pos)
+{
+	program[pos].breakPoint = false;
+}
+
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {
@@ -259,10 +256,8 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 	{
 		vmReset();
 	}
-
 	bool branching = false;
 	bool methodCalling = false;
-	bool canContinue = false;
 	int beginningOfMethod = 0;
 	int endOfMethod = sizeOfCodeArray;
 	int counter = 0;
@@ -271,7 +266,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 	uint64_t value3;
 	uint64_t value4;
 	std::string utf8;
-
 	std::cout << "Interpreter started" << std::endl;
 	do
 	{
@@ -514,7 +508,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// value 3 is the index of the name
 			// value 4 is the index of the type
 			utf8 = cPool[value3 - 1].constantItem + cPool[value4 - 1].constantItem; // method name and descriptor
-
 			for (int j = 0; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].methodName == utf8)
@@ -536,9 +529,25 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			// check for PrintStream, then output to console
 			utf8 = cPool[value2].constantItem;
 			if (utf8 == "print")
-				vm.currentOutput += cPool[value1].constantItem;
+			{
+				if (vm.addingStringToStack)
+				{
+					vm.currentOutput += cPool[value1].constantItem;
+					vm.addingStringToStack = false;
+				}
+				else
+					vm.currentOutput += std::to_string(value1);
+			}
 			else if (utf8 == "println")
-				vm.currentOutput += cPool[value1].constantItem + "\n";
+			{
+				if (vm.addingStringToStack)
+				{
+					vm.currentOutput += cPool[value1].constantItem + "\n";
+					vm.addingStringToStack = false;
+				}
+				else
+					vm.currentOutput += std::to_string(value1) + "\n";
+			}
 			break;
 		case imul:
 			value1 = vmStackPop();
@@ -609,6 +618,7 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			break;
 		case ldc:
 			value1 = program[vm.i].operand1;
+			vm.addingStringToStack = true;
 			vmStackPush(value1);
 			break;
 		case GOTO:

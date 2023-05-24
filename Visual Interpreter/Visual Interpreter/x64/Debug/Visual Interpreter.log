@@ -1,8 +1,8 @@
 ﻿  MainForm.cpp
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(278,23): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint8_t', possible loss of data
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(281,26): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(627,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
-C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(643,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(272,23): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint8_t', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(275,26): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(637,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
+C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\vm.h(653,12): warning C4244: '=': conversion from 'uint64_t' to 'int', possible loss of data
 C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\Visual Interpreter\MainForm.cpp(7,1): warning C4829: Possibly incorrect parameters to function main. Consider 'int main(Platform::Array<Platform::String^>^ argv)'
   JavaCode.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
   Visual Interpreter.vcxproj -> C:\Users\ADMIN\Desktop\Visual-Java-Bytecode-Interpreter-main\Visual Interpreter\x64\Debug\Visual Interpreter.exe
