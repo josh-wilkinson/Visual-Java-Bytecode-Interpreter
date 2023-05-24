@@ -171,7 +171,6 @@ void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, i
 			break;
 		}
 	}
-
 	for (int i = beginningOfMethod; i < sizeOfCodeArray; i++)
 	{
 		if (program[i].methodName != program[vm.i].methodName)
@@ -180,8 +179,7 @@ void branch(codeLine program[256], int sizeOfCodeArray, int beginningOfMethod, i
 			break;
 		}
 	}
-
-	for (int j = beginningOfMethod; j < endOfMethod; j++)
+	for (int j = beginningOfMethod; j <= endOfMethod; j++)
 	{
 		if (program[j].opcodeNumber == program[vm.i].operand1)
 		{
@@ -216,11 +214,8 @@ void shiftLeft()
 
 void parseConstantItemPositions(std::string utf8, uint64_t& value1, uint64_t& value2)
 {
-
 	std::string tempString = "";
-
 	utf8.erase(remove(utf8.begin(), utf8.end(), '#'), utf8.end()); //remove # from string
-
 	for (int j = 0; j <= utf8.size(); j++)
 	{
 		char c;
@@ -248,17 +243,20 @@ void setBreakPoint(codeLine program[256], int pos)
 	program[pos].breakPoint = !program[pos].breakPoint;
 }
 
+void removeBreakPoint(codeLine program[256], int pos)
+{
+	program[pos].breakPoint = false;
+}
+
 // interpreter code
 interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], int sizeOfCodeArray, int sizeOfConstantPoolArray) // program goes through code here
 {
-	if (!vm.steppingThroughCode || !program[vm.i].breakPoint)
+	if (!vm.steppingThroughCode)
 	{
 		vmReset();
 	}
-
 	bool branching = false;
 	bool methodCalling = false;
-	bool canContinue = false;
 	bool addingStringToStack = false;
 	int beginningOfMethod = 0;
 	int endOfMethod = sizeOfCodeArray;
@@ -268,7 +266,6 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 	uint64_t value3;
 	uint64_t value4;
 	std::string utf8;
-
 	std::cout << "Interpreter started" << std::endl;
 	do
 	{
@@ -503,15 +500,14 @@ interpretResult vmInterpret(codeLine program[256], constantPoolLine cPool[256], 
 			methodCalling = true;
 			value1 = program[vm.i].operand1;
 			value2 = vm.i; // current positon in the program array
-			utf8 = cPool[value1-1].constantItem;
+			utf8 = cPool[value1 - 1].constantItem;
 			parseConstantItemPositions(utf8, value3, value4);
 			// value4 contains the string location to the name and type of the method
-			utf8 = cPool[value4-1].constantItem;
+			utf8 = cPool[value4 - 1].constantItem;
 			parseConstantItemPositions(utf8, value3, value4);
 			// value 3 is the index of the name
 			// value 4 is the index of the type
 			utf8 = cPool[value3 - 1].constantItem + cPool[value4 - 1].constantItem; // method name and descriptor
-
 			for (int j = 0; j < sizeOfCodeArray; j++)
 			{
 				if (program[j].methodName == utf8)

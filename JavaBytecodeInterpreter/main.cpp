@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	int sizeOfCPoolArray = 0; // number of elements in constant pool array
 
 	// Parse text/opcode file
-	readInstructions(code, constantPool, "RetI.opcode", sizeOfCodeArray, sizeOfCPoolArray);
+	readInstructions(code, constantPool, "Spin.opcode", sizeOfCodeArray, sizeOfCPoolArray);
 	
 	/*
 	for (int i = 0; i < sizeOfCodeArray; i++)
